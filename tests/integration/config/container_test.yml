@@ -1,0 +1,22 @@
+include:
+    - part/container_test_parameters.yml
+    - part/container_test_interceptors.yml
+    - part/container_test_service.yml
+    - part/container_test_manager.yml
+    - part/container_test_storage.yml
+
+parameters :
+    db :
+        adapter : PDO_MYSQL
+        params :
+            host : localhost
+            port : 3306
+
+classes:
+    otherClass :
+        class : Test
+
+
+otherKey:
+    otherKeyClass :
+        aze : qsd

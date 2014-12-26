@@ -1,0 +1,11 @@
+include :
+    - subpackage/subpackage.yml
+
+classes :
+    CountryService :
+        class : Berthe_Service_Country
+        singleton : true
+        arguments : [ @CountryManager, 2 ]
+        call :
+            setManager : [ @CountryManager ]
+        interceptor : [  ]

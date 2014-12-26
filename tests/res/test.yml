@@ -1,0 +1,3 @@
+parameters:
+  test: $env.HOME
+  safe: \$env.HOME

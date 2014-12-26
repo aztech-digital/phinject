@@ -1,0 +1,9 @@
+#!/usr/bin/php
+<?php
+
+use Aztech\Phinject\Console\Phinject;
+
+(@include_once __DIR__ . '/../vendor/autoload.php') || @include_once __DIR__ . '/../../../autoload.php';
+
+$application = new Phinject();
+$application->run();

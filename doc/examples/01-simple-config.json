@@ -1,0 +1,10 @@
+{
+	"classes": {
+		"SimpleObject": {
+			"class": "\\stdClass", 
+			"props": {
+				"property": "value"
+			}
+		}
+	}
+}

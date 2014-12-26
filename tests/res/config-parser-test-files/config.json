@@ -1,0 +1,14 @@
+{
+    "params": {
+        "param": "value"
+    },
+    
+    "classes": {
+        "Object": {
+            "class": "\\stdClass",
+            "props": {
+                "target": "%param"
+            }
+        }
+    }
+}
