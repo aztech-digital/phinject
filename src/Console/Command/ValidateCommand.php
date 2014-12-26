@@ -28,7 +28,7 @@ class ValidateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = $input->getArgument('file');
+        $file = $input->getArgument('config-file');
         $ignores = explode(',', $input->getOption('ignore'));
 
         $logger = $this->buildLogger($output, LogLevel::WARNING);
