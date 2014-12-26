@@ -20,7 +20,6 @@
     },
     "require": {
         "symfony/yaml": "~2.5",
-        "jeremykendall/password-validator": "~3.0",
         "psr/log": "~1.0"
     },
     "require-dev": {
