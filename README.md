@@ -8,10 +8,10 @@ Phinject
 
 Phinject is a simple dependency injection container, with extensible activation & injection strategies.
 
-   
+
 ## Setup
 
-The recommended setup is to create a config folder at the root of your repository. All configuration is based on YAML files. JSON and native PHP files are also supported using the same data structure.
+The recommended setup is to create a configuration folder at the root of your repository. All configuration is based on YAML files. JSON and native PHP files are also supported using the same data structure.
 
 Sample YAML file :
 
@@ -176,4 +176,4 @@ By default, circular dependencies are not handled well (stack overflow...) due t
 
 This library is originally a fork on `oliviermadre/dic-it`, available [here](https://github.com/oliviermadre/dic-it).
 
-Most of the core features have however been refactored or rewritten, enough that I felt it was time to re-brand this package, in order to both prevent confusion, and because I did not like the original name.
+Most of the core features have however been refactored or rewritten, enough that I felt it was time to re-brand this package, in order to both prevent confusion with the original package, and because I did not like the name.
