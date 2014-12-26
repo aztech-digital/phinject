@@ -14,6 +14,7 @@ use Aztech\Phinject\Validation\EmptyNodeValidator;
 use Aztech\Phinject\Validation\DependencyValidator;
 use Aztech\Phinject\Validation\ConstructorArgumentsValidator;
 use Aztech\Phinject\Validation\CyclicDependencyValidator;
+use Aztech\Phinject\Console\CommandLogger;
 
 class ValidateCommand extends Command
 {
@@ -62,5 +63,18 @@ class ValidateCommand extends Command
         $validator->add(new CyclicDependencyValidator());
 
         return $validator;
+    }
+
+    private function buildLogger(OutputInterface $output, $threshold)
+    {
+        $logger = new CommandLogger($output);
+
+        $logger->enableThreshold($threshold);
+        $logger->enableFiltering();
+        $logger->addLevel(LogLevel::ERROR);
+        $logger->addLevel(LogLevel::WARNING);
+        $logger->addLevel(LogLevel::INFO);
+
+        return $logger;
     }
 }
