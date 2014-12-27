@@ -26,7 +26,7 @@ class DependencyValidator implements ConfigurationValidator
             return;
         }
 
-        $names = array_keys($properties);
+        $names = $properties->extractKeys();
 
         foreach ($names as $propertyName) {
             $this->validateProperty($validator, $className, $propertyName);
@@ -52,6 +52,12 @@ class DependencyValidator implements ConfigurationValidator
     private function validateNode(Validator $validator, ArrayResolver $global, ArrayResolver $node)
     {
         foreach ($node as $arg) {
+            if ($arg instanceof ArrayResolver) {
+                $this->validateNode($validator, $global, $arg);
+
+                continue;
+            }
+
             $prefix = substr($arg, 0, 1);
             $partial = substr($arg, 1);
 

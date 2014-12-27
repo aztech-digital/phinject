@@ -32,7 +32,7 @@ class ValidateCommand extends Command
         $file = $input->getArgument('config-file');
         $ignores = explode(',', $input->getOption('ignore'));
 
-        $logger = $this->buildLogger($output, LogLevel::WARNING);
+        $logger = $this->buildLogger($output, LogLevel::DEBUG);
         $config = ConfigFactory::fromFile($file);
 
         $output->writeln(PHP_EOL . 'Parsing YAML configuration file : ' . $file . PHP_EOL);
