@@ -16,6 +16,18 @@ use Aztech\Phinject\Util\ArrayResolver;
 class ContainerFactory
 {
 
+    private static $factory;
+
+    /**
+     * Overrides the default service builder factory.
+     *
+     * @param ServiceBuilderFactory $factory
+     */
+    public static function setServiceBuilderFactory(ServiceBuilderFactory $factory)
+    {
+        self::$factory = $factory;
+    }
+
     /**
      * Creates a new container using the given JSON configuration file.
      *
@@ -85,7 +97,7 @@ class ContainerFactory
     {
         $resolver = new ArrayResolver($options);
         $config = self::getConfig($config, $resolver);
-        $builderFactory = new ServiceBuilderFactory();
+        $builderFactory = self::$factory ?: new ServiceBuilderFactory();
 
         return new ObjectContainer($config, $builderFactory->build($resolver));
     }

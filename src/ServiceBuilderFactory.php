@@ -9,20 +9,27 @@ use Aztech\Phinject\Util\ArrayResolver;
 
 class ServiceBuilderFactory
 {
+    private $serviceBuilder;
+
+    public function __construct(ServiceBuilder $serviceBuilder = null)
+    {
+        if ($serviceBuilder === null) {
+            $serviceBuilder = new ServiceBuilder(
+                new DefaultActivatorFactory(),
+                new InjectorFactory()
+            );
+        }
+
+        $this->serviceBuilder = $serviceBuilder;
+    }
+
     public function build(ArrayResolver $options)
     {
-        $activatorFactory = new DefaultActivatorFactory();
-
-        $serviceBuilder = new ServiceBuilder(
-            $activatorFactory,
-            new InjectorFactory()
-        );
-
-        if ((bool) $options->resolve('deferred', true)) {
+        if ((bool) $options->resolve('deferred', true) && false) {
             $activatorFactory = new LazyActivatorFactory($activatorFactory, $serviceBuilder);
             $serviceBuilder = new ServiceBuilder($activatorFactory);
         }
 
-        return $serviceBuilder;
+        return $this->serviceBuilder;
     }
 }

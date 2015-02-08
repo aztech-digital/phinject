@@ -19,16 +19,18 @@ class DefaultActivatorFactory implements ActivatorFactory
 
     private $activators = array();
 
+    private $customActivators = array();
+
     private $methodNameParser;
 
     public function __construct()
     {
-        $this->addActivator('alias', new AliasActivator());
-        $this->addActivator('default', new ReflectionActivator());
-        $this->addActivator('builder', new InstanceInvocationActivator());
-        $this->addActivator('builder-static', new StaticInvocationActivator());
+        $this->addInternalActivator('alias', new AliasActivator());
+        $this->addInternalActivator('default', new ReflectionActivator());
+        $this->addInternalActivator('builder', new InstanceInvocationActivator());
+        $this->addInternalActivator('builder-static', new StaticInvocationActivator());
         $remoteFactory = new RemoteAdapterFactory();
-        $this->addActivator('remote', new RemoteActivator($remoteFactory));
+        $this->addInternalActivator('remote', new RemoteActivator($remoteFactory));
 
         $this->methodNameParser = new MethodNameParser();
     }
@@ -38,6 +40,19 @@ class DefaultActivatorFactory implements ActivatorFactory
      * @param string $key
      */
     public function addActivator($key, Activator $activator)
+    {
+        if (array_key_exists($key, $this->activators)) {
+            throw new \InvalidArgumentException('Activator key is reserved for internal use.');
+        }
+
+        $this->customActivators[$key] = $activator;
+    }
+
+    /**
+     *
+     * @param string $key
+     */
+    private function addInternalActivator($key, Activator $activator)
     {
         $this->activators[$key] = $activator;
     }
@@ -61,6 +76,12 @@ class DefaultActivatorFactory implements ActivatorFactory
 
         if ($configuration->resolve('class', false) !== false) {
             return $this->getRemoteOrReflectionActivator($configuration);
+        }
+
+        foreach ($this->customActivators as $name => $activator) {
+            if ($configuration->resolve($name, null)) {
+                return $this->customActivators[$name];
+            }
         }
 
         throw new UnbuildableServiceException(sprintf("Unbuildable service : '%s', no suitable activator found.", $serviceName));

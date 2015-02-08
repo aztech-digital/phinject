@@ -37,7 +37,7 @@ class ServiceBuilder
         InjectorFactory $injectorFactory = null)
     {
         $this->activatorFactory = $activatorFactory;
-        $this->injectorFactory = $injectorFactory;
+        $this->injectorFactory = $injectorFactory ?: new InjectorFactory();
         $this->typeInitializer = new OnceTypeInitializer();
     }
 
