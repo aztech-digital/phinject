@@ -10,7 +10,7 @@ class CommandLogger implements LoggerInterface
     
     private static $levels = array(
         'debug' => 0,
-    	'info' => 1,
+        'info' => 1,
         'notice' => 2,
         'warning' => 3,
         'error' => 4,

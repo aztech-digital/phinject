@@ -6,30 +6,23 @@ use Aztech\Phinject\Activators\DefaultActivatorFactory;
 use Aztech\Phinject\Activators\Lazy\LazyActivatorFactory;
 use Aztech\Phinject\Injectors\InjectorFactory;
 use Aztech\Phinject\Util\ArrayResolver;
+use Aztech\Phinject\ServiceBuilder\LazyServiceBuilder;
+use Aztech\Phinject\ServiceBuilder\DefaultServiceBuilder;
 
 class ServiceBuilderFactory
 {
-    private $serviceBuilder;
-
-    public function __construct(ServiceBuilder $serviceBuilder = null)
-    {
-        if ($serviceBuilder === null) {
-            $serviceBuilder = new ServiceBuilder(
-                new DefaultActivatorFactory(),
-                new InjectorFactory()
-            );
-        }
-
-        $this->serviceBuilder = $serviceBuilder;
-    }
-
     public function build(ArrayResolver $options)
     {
-        if ((bool) $options->resolve('deferred', true) && false) {
-            $activatorFactory = new LazyActivatorFactory($activatorFactory, $serviceBuilder);
-            $serviceBuilder = new ServiceBuilder($activatorFactory);
+        $activatorFactory = new DefaultActivatorFactory();
+        $injectorFactory = new InjectorFactory();
+
+        if ((bool) $options->resolve('deferred', true) == true) {
+            $serviceBuilder = new LazyServiceBuilder($activatorFactory, $injectorFactory);
+        }
+        else {
+            $serviceBuilder = new DefaultServiceBuilder($activatorFactory, $injectorFactory);
         }
 
-        return $this->serviceBuilder;
+        return $serviceBuilder;
     }
 }

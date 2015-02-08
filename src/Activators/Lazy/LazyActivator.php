@@ -25,7 +25,7 @@ class LazyActivator implements Activator
      */
     public function createInstance(Container $container, ArrayResolver $serviceConfig, $serviceName)
     {
-        if (! $serviceConfig->resolve('lazy', false)) {
+        if ($serviceConfig->resolve('lazy', false) == false) {
             return $this->serviceBuilder->buildService($container, $serviceConfig, $serviceName);
         }
 
