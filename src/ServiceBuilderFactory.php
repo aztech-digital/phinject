@@ -3,11 +3,10 @@
 namespace Aztech\Phinject;
 
 use Aztech\Phinject\Activators\DefaultActivatorFactory;
-use Aztech\Phinject\Activators\Lazy\LazyActivatorFactory;
 use Aztech\Phinject\Injectors\InjectorFactory;
-use Aztech\Phinject\Util\ArrayResolver;
-use Aztech\Phinject\ServiceBuilder\LazyServiceBuilder;
 use Aztech\Phinject\ServiceBuilder\DefaultServiceBuilder;
+use Aztech\Phinject\ServiceBuilder\LazyServiceBuilder;
+use Aztech\Phinject\Util\ArrayResolver;
 
 class ServiceBuilderFactory
 {

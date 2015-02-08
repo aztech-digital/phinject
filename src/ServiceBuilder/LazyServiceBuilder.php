@@ -2,12 +2,12 @@
 
 namespace Aztech\Phinject\ServiceBuilder;
 
-use Aztech\Phinject\ServiceBuilder;
-use Aztech\Phinject\Container;
-use Aztech\Phinject\Util\ArrayResolver;
 use Aztech\Phinject\ActivatorFactory;
-use Aztech\Phinject\Injectors\InjectorFactory;
+use Aztech\Phinject\Container;
+use Aztech\Phinject\ServiceBuilder;
 use Aztech\Phinject\Activators\Lazy\LazyActivatorFactory;
+use Aztech\Phinject\Injectors\InjectorFactory;
+use Aztech\Phinject\Util\ArrayResolver;
 
 class LazyServiceBuilder implements ServiceBuilder
 {

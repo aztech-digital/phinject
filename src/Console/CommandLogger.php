@@ -3,11 +3,12 @@
 namespace Aztech\Phinject\Console;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CommandLogger implements LoggerInterface
 {
-    
+
     private static $levels = array(
         'debug' => 0,
         'info' => 1,
@@ -18,11 +19,11 @@ class CommandLogger implements LoggerInterface
         'alert' => 6,
         'emergency' => 7
     );
-    
+
     private $messageStack = array();
-    
+
     private $threshold = null;
-    
+
     private $apply_threshold = false;
 
     private $filtering = false;
@@ -46,7 +47,7 @@ class CommandLogger implements LoggerInterface
         $this->threshold = self::$levels[$level];
         $this->apply_threshold = true;
     }
-    
+
     public function addLevel($level)
     {
         $this->enabled[] = $level;
@@ -61,7 +62,7 @@ class CommandLogger implements LoggerInterface
      */
     public function emergency($message, array $context = array())
     {
-        $this->log(\Psr\Log\LogLevel::EMERGENCY, $message, $context);
+        $this->log(LogLevel::EMERGENCY, $message, $context);
     }
 
     /**
@@ -76,7 +77,7 @@ class CommandLogger implements LoggerInterface
     */
     public function alert($message, array $context = array())
     {
-        $this->log(\Psr\Log\LogLevel::ALERT, $message, $context);
+        $this->log(LogLevel::ALERT, $message, $context);
     }
 
     /**
@@ -90,7 +91,7 @@ class CommandLogger implements LoggerInterface
     */
     public function critical($message, array $context = array())
     {
-        $this->log(\Psr\Log\LogLevel::CRITICAL, $message, $context);
+        $this->log(LogLevel::CRITICAL, $message, $context);
     }
 
     /**
@@ -103,7 +104,7 @@ class CommandLogger implements LoggerInterface
     */
     public function error($message, array $context = array())
     {
-        $this->log(\Psr\Log\LogLevel::ERROR, $message, $context);
+        $this->log(LogLevel::ERROR, $message, $context);
     }
 
     /**
@@ -118,7 +119,7 @@ class CommandLogger implements LoggerInterface
     */
     public function warning($message, array $context = array())
     {
-        $this->log(\Psr\Log\LogLevel::WARNING, $message, $context);
+        $this->log(LogLevel::WARNING, $message, $context);
     }
 
     /**
@@ -130,7 +131,7 @@ class CommandLogger implements LoggerInterface
     */
     public function notice($message, array $context = array())
     {
-        $this->log(\Psr\Log\LogLevel::NOTICE, $message, $context);
+        $this->log(LogLevel::NOTICE, $message, $context);
     }
 
     /**
@@ -144,7 +145,7 @@ class CommandLogger implements LoggerInterface
     */
     public function info($message, array $context = array())
     {
-        $this->log(\Psr\Log\LogLevel::INFO, $message, $context);
+        $this->log(LogLevel::INFO, $message, $context);
     }
 
     /**
@@ -156,7 +157,7 @@ class CommandLogger implements LoggerInterface
     */
     public function debug($message, array $context = array())
     {
-        $this->log(\Psr\Log\LogLevel::DEBUG, $message, $context);
+        $this->log(LogLevel::DEBUG, $message, $context);
     }
 
     /**
@@ -173,44 +174,44 @@ class CommandLogger implements LoggerInterface
         if ($this->filtering && ! in_array($level, $this->enabled)) {
             return;
         }
-        
+
         $output = $this->output;
-        
+
         $write = function($level, $message) use($output) {
-            if ($level == \Psr\Log\LogLevel::ERROR) {
+            if ($level == LogLevel::ERROR) {
                 $output->writeln(sprintf('<error>%s</error>', $message));
             }
-            elseif ($level == \Psr\Log\LogLevel::WARNING) {
+            elseif ($level == LogLevel::WARNING) {
                 $output->writeln(sprintf('<comment>%s</comment>', $message));
             }
-            elseif ($level == \Psr\Log\LogLevel::INFO) {
+            elseif ($level == LogLevel::INFO) {
                 $output->writeln(sprintf('<fg=green>%s</fg=green>', $message));
             }
             else {
                 $output->writeln($message);
             }
         };
-        
+
         if ($this->apply_threshold) {
             $this->messageStack[] = array($level, $message);
-            
-            if (self::$levels[$level] >= $this->threshold) { 
+
+            if (self::$levels[$level] >= $this->threshold) {
                 foreach ($this->messageStack as $stackedMessage) {
                     list($plevel, $pmessage) = $stackedMessage;
-            
+
                     $write($plevel, $pmessage);
                 }
-            
+
                 $this->messageStack = array();
                 $this->apply_threshold = false;
             }
-            
+
             return;
         }
-        
+
         $write($level, $message);
     }
-    
+
     public function resetStack() {
         $this->messageStack = array();
         $this->apply_threshold = true;

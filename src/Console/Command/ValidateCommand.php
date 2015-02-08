@@ -2,19 +2,19 @@
 
 namespace Aztech\Phinject\Console\Command;
 
+use Aztech\Phinject\Config\ConfigFactory;
+use Aztech\Phinject\Console\CommandLogger;
+use Aztech\Phinject\Validation\ConstructorArgumentsValidator;
+use Aztech\Phinject\Validation\CyclicDependencyValidator;
+use Aztech\Phinject\Validation\DependencyValidator;
+use Aztech\Phinject\Validation\EmptyNodeValidator;
+use Aztech\Phinject\Validation\Validator;
+use Psr\Log\LogLevel;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Aztech\Phinject\Validation\Validator;
-use Psr\Log\LogLevel;
-use Aztech\Phinject\Config\ConfigFactory;
-use Aztech\Phinject\Validation\EmptyNodeValidator;
-use Aztech\Phinject\Validation\DependencyValidator;
-use Aztech\Phinject\Validation\ConstructorArgumentsValidator;
-use Aztech\Phinject\Validation\CyclicDependencyValidator;
-use Aztech\Phinject\Console\CommandLogger;
 
 class ValidateCommand extends Command
 {

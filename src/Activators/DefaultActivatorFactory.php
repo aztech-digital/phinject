@@ -66,11 +66,11 @@ class DefaultActivatorFactory implements ActivatorFactory
      */
     public function getActivator($serviceName, ArrayResolver $configuration)
     {
-        if ($alias = $configuration->resolve('alias', null)) {
+        if ($configuration->resolve('alias', null)) {
             return $this->activators['alias'];
         }
 
-        if ($builder = $configuration->resolve('builder', null)) {
+        if ($configuration->resolve('builder', null)) {
             return $this->getActivatorByBuilderType($serviceName, $builder);
         }
 
@@ -80,7 +80,7 @@ class DefaultActivatorFactory implements ActivatorFactory
 
         foreach ($this->customActivators as $name => $activator) {
             if ($configuration->resolve($name, null)) {
-                return $this->customActivators[$name];
+                return $activator;
             }
         }
 

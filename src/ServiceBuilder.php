@@ -2,8 +2,6 @@
 
 namespace Aztech\Phinject;
 
-use Aztech\Phinject\Initializer\OnceTypeInitializer;
-use Aztech\Phinject\Injectors\InjectorFactory;
 use Aztech\Phinject\Util\ArrayResolver;
 
 interface ServiceBuilder

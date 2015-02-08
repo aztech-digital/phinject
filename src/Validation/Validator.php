@@ -3,7 +3,6 @@
 namespace Aztech\Phinject\Validation;
 
 use Aztech\Phinject\Config;
-use Aztech\Phinject\Validation\ConfigurationValidator;
 use Aztech\Phinject\Util\ArrayResolver;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -25,7 +24,7 @@ class Validator
 
     /**
      *
-     * @var \Aztech\Phinject\Tools\Validation\ConfigurationValidator[]
+     * @var ConfigurationValidator[]
      */
     private $validators = array();
 
