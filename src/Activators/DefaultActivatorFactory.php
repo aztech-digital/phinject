@@ -70,7 +70,7 @@ class DefaultActivatorFactory implements ActivatorFactory
             return $this->activators['alias'];
         }
 
-        if ($configuration->resolve('builder', null)) {
+        if ($builder = $configuration->resolve('builder', null)) {
             return $this->getActivatorByBuilderType($serviceName, $builder);
         }
 
