@@ -38,6 +38,9 @@ phpcs: pretest
 	vendor/bin/phpcs --standard=phpcs.xml -n src
 endif
 
+phpcbf: pretest
+	vendor/bin/phpcbf --standard=phpcs.xml src
+
 bugfree: pretest
 	[ ! -f bugfree.json ] || vendor/bin/bugfree generateConfig
 	vendor/bin/bugfree lint src -c bugfree.json
