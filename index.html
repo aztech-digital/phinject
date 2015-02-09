@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Phinject by aztech-digital</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Phinject</h1>
+        <h2>PHP Dependency Injection Library</h2>
+        <a href="https://github.com/aztech-digital/phinject" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="phinject" class="anchor" href="#phinject" aria-hidden="true"><span class="octicon octicon-link"></span></a>Phinject</h1>
+
+<p><a href="https://travis-ci.org/aztech-digital/phinject"><img src="https://travis-ci.org/aztech-digital/phinject.png?branch=master" alt="Build Status"></a>
+<a href="https://scrutinizer-ci.com/g/aztech-digital/phinject/?branch=master"><img src="https://scrutinizer-ci.com/g/aztech-digital/phinject/badges/quality-score.png?b=master" alt="Scrutinizer Code Quality"></a>
+<a href="https://scrutinizer-ci.com/g/aztech-digital/phinject/?branch=master"><img src="https://scrutinizer-ci.com/g/aztech-digital/phinject/badges/coverage.png?b=master" alt="Code Coverage"></a>
+<a href="http://hhvm.h4cc.de/package/aztech/phinject"><img src="http://hhvm.h4cc.de/badge/aztech/phinject.png" alt="HHVM Status"></a></p>
+
+<p>Phinject is a simple dependency injection container, with extensible activation &amp; injection strategies.</p>
+
+<h2>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h2>
+
+<p>The recommended setup is to create a configuration folder at the root of your repository. All configuration is based on YAML files. JSON and native PHP files are also supported using the same data structure.</p>
+
+<p>Sample YAML file :</p>
+
+<pre><code>parameters:
+    MyParameter: 'Some parameter value'
+    MyOtherParameter: 42
+    MyParameters:
+        nested_level:
+            foo: foo
+            bar: bar
+            baz: foobar
+        late_bound:
+            # This will inject the value of MyOtherParameter (42 in this case)
+            param_foo: %MyOtherParameter
+            # This will inject the value of environment variable FOO
+            env_foo: $env.FOO
+            const_baz: $const.BAZ
+        coerce_string_value:
+            # This will inject "$env.FOO" instead of the value of FOO environment variable.
+            forced_var: \$env.FOO
+classes:
+    MyServiceName:
+        class: \Fully\Qualified\ClassName
+        arguments: [ @MyDependency, %MyParameter, %MyParameters.nested_level, 'Hard-coded value', $container, $env.ENV, $const.ROOT_PATH ]
+    MyOtherServiceWithSingleArgument:
+        class: \Fully\Qualified\ClassName
+        arguments: @MyDependency
+    MyDependency:
+        class: \Fully\Qualified\DependencyClassName
+        props:
+            MyProperty: %MyOtherParameter
+    DependencyBuildFromStaticMethodCall:
+        builder:  \Fully\Qualified\BuilderClassName::buildMethod(@MethodArgument, %param.value)
+    DependencyBuildFromInstanceMethodCall:
+        builder:  MyDependency-&gt;buildMethod(@MethodArgument, %param.value)
+</code></pre>
+
+<p>Bootstrapping the container and fetching an object :</p>
+
+<pre><code>$container = Aztech\Phinject\ContainerFactory::createFromYaml('config/dependencies.yml');
+$service = $container-&gt;get('MyServiceName');
+
+// Do stuff with your service ...
+
+</code></pre>
+
+<h2>
+<a id="references" class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References</h2>
+
+<p>You can inject different kind of references inside class definitions. You can get other service instances, parameters, the container itself, env variables, and constant values.</p>
+
+<h3>
+<a id="named-references" class="anchor" href="#named-references" aria-hidden="true"><span class="octicon octicon-link"></span></a>Named references</h3>
+
+<ul>
+<li>@ServiceName : fetch an instance of that definition</li>
+<li>%param : fetch a parameter defined in the container</li>
+<li>$container : fetch the container itself</li>
+<li>$env.ENV_NAME : fetch an environment variable. Allowed as a parameter value.</li>
+<li>$const.CONST_NAME : fetch a global defined constant value. Allowed as a parameter value.</li>
+</ul>
+
+<h3>
+<a id="anonymous-references" class="anchor" href="#anonymous-references" aria-hidden="true"><span class="octicon octicon-link"></span></a>Anonymous references</h3>
+
+<p>Dependencies can also be expressed as anonymous dependencies. This avoids binding a dependency to the container, and can be useful to omit certain dependencies from being accessible via the container.</p>
+
+<p>So the following definitions :</p>
+
+<pre><code>classes:
+    MyDependency:
+        class: \My\Dependency
+        call: 
+            someMethod: [ "arg" ]
+    MyService:
+        class: \My\Class
+        args:
+            [ @MyDependency ]
+...
+</code></pre>
+
+<p>Can now be rewritten as :</p>
+
+<pre><code>classes:
+    MyService:
+        class: \My\Class
+        args:
+            - class: \My\Dependency
+              isClass: true
+              call: 
+                  someMethod: [ "arg" ]
+...
+</code></pre>
+
+<p>While not strictly mandatory, it is recommended to include the <code>isClass</code> parameter in anonymous definitions. Without that extra key, the dependency resolver is unable to determine what causes the definition to fail building, and automatically falls back to returning the definition as a parameter array, which can cause misleading error messages.</p>
+
+<h2>
+<a id="semi-automatic-injections" class="anchor" href="#semi-automatic-injections" aria-hidden="true"><span class="octicon octicon-link"></span></a>Semi-automatic injections</h2>
+
+<p>If you find yourself calling the same method on multiple classes that share a common interface or base class, you can define global method injections that will apply to all types deriving from the base type defined in your global injection :</p>
+
+<pre><code>global:
+    injections:
+        "\Psr\Log\LoggerAwareInterface":
+            setLogger: [ @Logger ]
+classes:
+    Logger: 
+        class: \Psr\Log\NullLogger
+    MyService:
+        class: \My\ServiceImplementingLoggerAwareInterface
+</code></pre>
+
+<p>Whenever 'MyService' is instantiated, it's <code>setLogger</code> method will be invoked since it implements <code>LoggerAwareInterface</code>.</p>
+
+<h2>
+<a id="template-pre-processor" class="anchor" href="#template-pre-processor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Template pre-processor.</h2>
+
+<p>aztech-dev/dic-it
+To help maintain configuration files, DIC-IT provides a lightweight configuration preprocessor which can be used to define templates when you have to initialize multiple objects graphs that share the same build pattern. At the time being, only full service definition templates are supported.</p>
+
+<p>A sample template definition and use follows :</p>
+
+<pre><code>templates:
+    MyTemplate: 
+        class: "{{template-class-var}}"
+        args:
+            - "{{template-ctor-var}}"    
+
+apply-templates:
+    TemplatedService:
+        template: MyTemplate
+        apply:
+            template-class-var: "\\MyTemplate\\Class"     
+            template-ctor-var: "Some arg value"
+</code></pre>
+
+<p>This example will declare an object definition named "TemplatedService" and register it in the container.</p>
+
+<p>Note that templated definitions cannot be bound to the container manually, they have to be processed into actual object definitions first.</p>
+
+<h2>
+<a id="using-includes" class="anchor" href="#using-includes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using includes</h2>
+
+<p>The configuration can be split into multiple files to ease management of your dependencies :</p>
+
+<pre><code>includes:
+    - relative/file.yml
+    - relative/another-file.yml
+
+classes:
+    ...
+</code></pre>
+
+<p>This allows you to separate parameters from service definitions for example.</p>
+
+<h2>
+<a id="default-object-life-cycle" class="anchor" href="#default-object-life-cycle" aria-hidden="true"><span class="octicon octicon-link"></span></a>Default object life-cycle</h2>
+
+<p>By default, all objects are created as non-singleton (this will definitely change) objects, so every time a reference is resolved by the container, a new instance of the requested object is created.</p>
+
+<h2>
+<a id="managing-circular-dependencies" class="anchor" href="#managing-circular-dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Managing circular dependencies</h2>
+
+<p>By default, circular dependencies are not handled well (stack overflow...) due the default object life-cycle. To enable circular dependencies for a given object, at least one of the two objects must be defined as a singleton. This however will not yield the expected results, so it is <em>highly</em> recommended to define both objects involved in the circular dependency as singletons.</p>
+
+<h2>
+<a id="credits" class="anchor" href="#credits" aria-hidden="true"><span class="octicon octicon-link"></span></a>Credits</h2>
+
+<p>This library is originally a fork on <code>oliviermadre/dic-it</code>, available <a href="https://github.com/oliviermadre/dic-it">here</a>.</p>
+
+<p>Most of the core features have however been refactored or rewritten, enough that I felt it was time to re-brand this package, in order to both prevent confusion with the original package, and because I did not like the name.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/aztech-digital/phinject/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/aztech-digital/phinject/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/aztech-digital/phinject"></a> is maintained by <a href="https://github.com/aztech-digital">aztech-digital</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
