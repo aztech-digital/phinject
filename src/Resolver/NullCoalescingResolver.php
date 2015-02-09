@@ -20,7 +20,7 @@ class NullCoalescingResolver implements Resolver
      */
     public function accepts($reference)
     {
-        return count(explode('?', $reference, 2)) == 2;
+        return count(explode('?:', $reference, 2)) == 2;
     }
 
     /*
@@ -28,7 +28,7 @@ class NullCoalescingResolver implements Resolver
      */
     public function resolve($reference)
     {
-        $parts = explode('?', $reference, 2);
+        $parts = explode('?:', $reference, 2);
 
         for ($index = 0; $index < count($parts); $index++) {
             try {

@@ -370,7 +370,7 @@ classes:
     regular:
         class: \stdClass
         properties:
-            test: @ns:namespace
+            test: \$ns:namespace
 YML;
 
         $container = ContainerFactory::createFromInlineYaml($yml);
@@ -502,7 +502,7 @@ classes:
     b:
         class: \DateTime
         call:
-            setTimestamp: %timestamp ? 42
+            setTimestamp: %timestamp ?: 42
 YML;
 
         $container = ContainerFactory::createFromInlineYaml($config);
@@ -518,7 +518,7 @@ classes:
     b:
         class: \DateTime
         call:
-            setTimestamp: %timestamp ? 42
+            setTimestamp: %timestamp ?: 42
 YML;
 
         $container = ContainerFactory::createFromInlineYaml($config);
@@ -534,7 +534,7 @@ classes:
     b:
         class: \DateTime
         call:
-            setTimestamp: %timestamp ? %missingToo ? 42
+            setTimestamp: %timestamp ?: %missingToo ?: 42
 YML;
 
         $container = ContainerFactory::createFromInlineYaml($config);
@@ -554,7 +554,7 @@ classes:
 YML;
 
         $container = ContainerFactory::createFromInlineYaml($config);
-        $object = $container->resolve('@defer:@b->getTimestamp()');
+        $object = $container->resolve('$defer:@b->getTimestamp()');
 
         $this->assertEquals(42, $object());
     }
@@ -572,10 +572,10 @@ classes:
 YML;
 
         $container = ContainerFactory::createFromInlineYaml($config);
-        $getTs = $container->resolve('@defer:@b->getTimestamp()');
-        $updateTs = $container->resolve('@defer:@b->setTimestamp(12)');
-        $updateTsParam = $container->resolve('@defer:@b->setTimestamp(%ts)');
-        $updateTsParamless = $container->resolve('@defer:@b->setTimestamp');
+        $getTs = $container->resolve('$defer:@b->getTimestamp()');
+        $updateTs = $container->resolve('$defer:@b->setTimestamp(12)');
+        $updateTsParam = $container->resolve('$defer:@b->setTimestamp(%ts)');
+        $updateTsParamless = $container->resolve('$defer:@b->setTimestamp');
 
         $this->assertEquals(42, $getTs());
         $updateTs();
@@ -602,6 +602,6 @@ classes:
 YML;
 
         $container = ContainerFactory::createFromInlineYaml($config);
-        $container->resolve('@defer:@b');
+        $container->resolve('$defer:@b');
     }
 }

@@ -3,6 +3,11 @@
 namespace Aztech\Phinject\Tests;
 
 use Aztech\Phinject\DefaultReferenceResolver;
+use Aztech\Phinject\UnknownDefinitionException;
+use Aztech\Phinject\ObjectContainer;
+use Aztech\Phinject\Config\ArrayConfig;
+use Aztech\Phinject\ServiceBuilder\DefaultServiceBuilder;
+use Aztech\Phinject\Activators\DefaultActivatorFactory;
 
 class ReferenceResolverTest extends \PHPUnit_Framework_TestCase
 {
@@ -93,4 +98,16 @@ class ReferenceResolverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $resolver->resolveMany($references));
     }
 
+    public function testNullCoalescenceResolvesDefaultValueWhenReferenceIsNotDefined()
+    {
+        $container = new ObjectContainer(
+            new ArrayConfig([]),
+            new DefaultServiceBuilder(new DefaultActivatorFactory())
+        );
+
+        $reference = '%parameter ?: default value';
+        $resolver = new DefaultReferenceResolver($container);
+
+        $this->assertEquals('default value', $resolver->resolve($reference));
+    }
 }

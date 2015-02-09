@@ -43,6 +43,31 @@ classes:
             myProperty: '%set.key'
 ```
 
+### Providing default values
+
+If you want to provide a default value in case it is not defined in the parameters, you can do so using the same null-coalesce operator as in PHP:
+
+```yaml
+classes:
+    myObject:
+        class: \stdClass
+        properties:
+            myProperty: '%optionalParam ?: default value'
+```
+
+## Regular values
+
+You can also inject values directly without using the parameters section.
+
+```yaml
+classes:
+    myObject:
+        class: \stdClass
+        properties:
+            myProperty: 20
+            myOtherProperty: string value
+```
+
 ## Object references
 
 ### Simple references
@@ -67,7 +92,7 @@ Getting the hang of it ? There's more.
 
 ### Injecting object arrays
 
-Sometimes, you may want to build a list of objects and inject that list as an array. Phinject uses the special `@ns:` prefix to handle those cases:
+Sometimes, you may want to build a list of objects and inject that list as an array. Phinject uses the special `$ns:` prefix to handle those cases:
 
 ```yaml
 classes:
@@ -78,7 +103,7 @@ classes:
     myObject:
         class: \stdClass
         properties:
-            myArrayProperty: '@ns:myList'
+            myArrayProperty: '$ns:myList'
 ```
 
 ### Working with factories
@@ -95,6 +120,19 @@ classes:
             myProperty: \My\Factory\Type::factoryMethod()
             # You can also pass arguments to the method
             mySecondProperty: \My\Factory\Type::otherFactoryMethod(@aDependencyObject, %someParameterValue)
+```
+
+### Injecting callbacks
+
+Phinject also allows you to generate callbacks using the special syntax `$defer:@instance->method`. With this syntax, instead of injecting the result of the call to the specified method, it will inject the method as callback, which can then be invoked like any good old callback in PHP:
+
+```yaml
+classes:
+    firstObject:
+        class: \My\Class
+    secondObject:
+        class: \My\OtherClass
+        arguments: [ '$defer:@firstObject->myMethod' ]
 ```
 
 ## Built-in references
