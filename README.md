@@ -3,7 +3,7 @@ Phinject
 
 [![Build Status](https://travis-ci.org/aztech-digital/phinject.png?branch=master)](https://travis-ci.org/aztech-digital/phinject)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/coverage/g/aztech-digital/phinject.svg?style=flat)](https://scrutinizer-ci.com/g/aztech-digital/phinject/?branch=master)
-[![Code Coverage](https://img.shields.io/scrutinizer/g/aztech-digital/carnival.svg?style=flat)](https://scrutinizer-ci.com/g/aztech-digital/phinject/?branch=master)
+[![Code Coverage](https://img.shields.io/scrutinizer/g/aztech-digital/phinject.svg?style=flat)](https://scrutinizer-ci.com/g/aztech-digital/phinject/?branch=master)
 [![HHVM Support](https://img.shields.io/hhvm/aztech/phinject.svg)](http://hhvm.h4cc.de/package/aztech/phinject)
 
 Phinject is a simple dependency injection container, with extensible activation & injection strategies.
