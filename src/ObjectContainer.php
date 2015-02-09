@@ -3,8 +3,9 @@
 namespace Aztech\Phinject;
 
 use Aztech\Phinject\Util\ArrayResolver;
+use Interop\Container\ContainerInterface;
 
-class ObjectContainer implements Container
+class ObjectContainer implements Container, DelegatingContainer
 {
 
     /**
@@ -45,6 +46,12 @@ class ObjectContainer implements Container
 
     /**
      *
+     * @var ContainerInterface
+     */
+    protected $delegateContainer = null;
+
+    /**
+     *
      * @param Config $config
      */
     public function __construct(Config $config, ServiceBuilder $builder)
@@ -54,7 +61,15 @@ class ObjectContainer implements Container
         $this->serviceBuilder = $builder;
         $this->classes = $this->config->resolve('classes', array());
         $this->registry = new ObjectRegistry();
-        $this->referenceResolver = new DefaultReferenceResolver($this);
+
+        $this->setDelegateContainer($this);
+    }
+
+    public function setDelegateContainer(ContainerInterface $container)
+    {
+        $this->delegateContainer = $container;
+
+        $this->referenceResolver = new DefaultReferenceResolver($this->delegateContainer);
         $this->parameterContainer = new ParameterContainer($this, $this->config->resolve('parameters', array()));
     }
 
