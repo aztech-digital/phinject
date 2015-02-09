@@ -78,7 +78,7 @@ classes:
     myObject:
         class: \MyClass
         lazy: true
-        arguments [ ... ]
+        arguments: [ ... ]
 ```
 
 Lazy-objects are returned as proxies to the actual object, and the build process is only triggered once you use your object in your code. Using your object is defined as either getting or setting a property value, or calling a method on it.
