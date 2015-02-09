@@ -1,6 +1,6 @@
 # References
 
-[Injection types](./02-Injection-types.md) - References
+**Navigation**: [Injection types](./02-Injection-types.md) - References - [Activation strategies](./04-Activators.md)
 
 As we saw in the [Getting started](01-Getting-started.md) tutorial, dependency injection really boils down to being able store scalar values and object instances as dependencies ready to be used by another class.
 
@@ -27,6 +27,7 @@ parameters:
 
 Injecting those values in objects is pretty simple:
 
+
 ```yaml
 classes:
     myObject:
@@ -46,7 +47,7 @@ classes:
 
 ### Simple references
 
-To inject object, you can use object references. Those are simply an object's name as defined in your configuration, prefixed by the `@` symbol:
+To inject objects, you can use object references. Those are simply an object's name as defined in your configuration, prefixed by the `@` symbol:
 
 ```yaml
 classes:
@@ -96,3 +97,58 @@ classes:
             mySecondProperty: \My\Factory\Type::otherFactoryMethod(@aDependencyObject, %someParameterValue)
 ```
 
+## Built-in references
+
+Phinject also provides access to some special references, namely the container, environment variables, and constants.
+
+### Injecting the container
+
+If you ever need to inject the container itself into an object, it's possible via the special `$container` reference:
+
+```yaml
+classes:
+    containerAwareObject:
+        class: \My\Class
+        arguments: [ '$container' ]
+```
+
+**Important notice** We highly discourage you to inject the container. Your application code should *never ever be aware* of the dependency injection container, and the cases justifying to do this are extremly limited. Phinject believes that if you need to inject the container, you are doing it wrong.
+
+### Injecting environment variables
+
+Phinject provides a special reference to access the environment variables, `$env`. It allows you to inject the value of an environment variable either in the parameters section, or in any section where a reference is allowed:
+
+```yaml
+parameters:
+    myParam: $env.VAR_NAME
+classes:
+    myObject:
+        class: \My\Class
+        arguments: [ '$env.VAR_NAME' ]
+```
+
+### Injecting constants
+
+Just like environment variable, you can inject defined global constants in your definitions using the `$const` reference either in the parameters section, or in any section where a reference is allowed:
+
+```yaml
+parameters:
+    myParam: $const.CONST_NAME
+classes:
+    myObject:
+        class: \My\Class
+        arguments: [ '$const.CONST_NAME' ]
+```
+
+### Escaping values in the parameters section
+
+If you do happen to have a parameter whose value actually starts with `$env.` or `$const.`, you'll run into an issue, as Phinject will try to resolve the value as a reference.
+
+In that case, you simply need to escape the value with a backslash, which tells Phinject to not resolve the value as a reference:
+
+```yaml
+parameters:
+    myParam: \$const.something
+```
+
+**Next**: [Activation strategies](./04-Activators.md)

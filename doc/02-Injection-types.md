@@ -1,6 +1,6 @@
 # Injection types
 
-[Getting started](./01-Getting-started) - Injection types - [References](./03-References.md)
+**Navigation**: [Getting started](./01-Getting-started) - Injection types - [References](./03-References.md)
 
 When using dependency injection, you encounter two types of dependency injections:
 
@@ -69,3 +69,5 @@ classes:
             myProperty: '%someParameter'
             myOtherProperty: '@someDependency'
 ```
+
+**Next**: [References](./03-References.md)

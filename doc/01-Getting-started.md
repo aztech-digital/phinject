@@ -1,6 +1,6 @@
 # Getting started
 
-Getting started - [Injection types](./02-Injection-types.md)
+**Navigation**: Getting started - [Injection types](./02-Injection-types.md)
 
 Phinject is designed to be easy to use.
 
@@ -153,3 +153,5 @@ Once you run the code again, it will give the same output as before.
 We've just covered the basics of Phinject, allowing you to configure parameters and object dependencies in the configuration file.
 
 Obviously, the example is far from real-life code, but it serves to highlight the basic functionality and concepts of Phinject.
+
+**Next**: [Injection types](./02-Injection-types.md)
