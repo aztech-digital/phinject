@@ -94,7 +94,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function testCyclicDependenciesDoNotOverflowWithOneSingletonInCycle()
     {
         $config = new ArrayConfig($this->getCyclicDependencies('cyclic', true, false));
-        $container = ContainerFactory::create($config, array('deferred' => true));
+        $container = ContainerFactory::create($config, array('deferred' => false));
 
         $container->get('cyclic');
     }
@@ -103,7 +103,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $config = new ArrayConfig($this->getCyclicDependencies('cyclic', true, true));
 
-        $container = ContainerFactory::create($config, array('deferred' => true));
+        $container = ContainerFactory::create($config, array('deferred' => false));
 
         $container->get('cyclic');
     }
@@ -167,11 +167,15 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $container = ContainerFactory::create($config, array('deferred' => false));
 
         $item = new \stdClass();
+        $item->property = 'value';
 
         $container->lateBind('boundKey', $item);
-
+        $this->assertEquals('value', $container->get('boundKey')->property);
+        
         $item = new \stdClass();
+        $item->other = 'other';
 
+        $this->assertEquals($item, $container->get('boundKey'));
         $this->assertSame($item, $container->get('boundKey'));
 
         $item = new \stdClass();
@@ -603,5 +607,25 @@ YML;
 
         $container = ContainerFactory::createFromInlineYaml($config);
         $container->resolve('$defer:@b');
+    }
+    
+    public function testObjectsAreUpdatedInContainer()
+    {
+        $config = <<<YML
+classes:
+    b:
+        class: \DateTime
+        call:
+            setTimestamp: 42
+YML;
+
+        $container = ContainerFactory::createFromInlineYaml($config);
+        $time = $container->resolve('@b');
+        
+        $this->assertEquals(42, $time->getTimestamp());
+        
+        $time->setTimestamp(23);
+        
+        $this->assertEquals(23, $container->resolve('@b')->getTimestamp());
     }
 }

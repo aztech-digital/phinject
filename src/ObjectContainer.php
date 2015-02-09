@@ -176,7 +176,7 @@ class ObjectContainer implements Container, DelegatingContainer
      * @param string $serviceName
      * @return object @SuppressWarnings(PHPMD.ElseExpression)
      */
-    public function &get($serviceName)
+    public function get($serviceName)
     {
         if ($this->registry->has($serviceName)) {
             $service = $this->registry->getStrict($serviceName);

@@ -57,7 +57,7 @@ class DefaultServiceBuilder implements ServiceBuilder
         // Singleton by default to prevent stack explosions
         if ($serviceConfig->resolve('singleton', true)) {
             // Only store if singleton'ed to spare memory
-            $container->lateBind($serviceName, $object);
+            $container->bind($serviceName, $object);
         }
 
         $this->inject($container, $object, $serviceConfig);

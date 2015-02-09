@@ -1,6 +1,6 @@
 # Activation strategies
 
-**Navigation**: [References](./03-References.md) - Activation strategies
+**Navigation**: [References](./03-References.md) - Activation strategies - [Lifecycle of objects](./05-Lifecycle.md)
 
 So far, all examples given only use the standard activation strategy, which simply invokes an object's constructor with arguments.
 
@@ -85,3 +85,4 @@ Lazy-objects are returned as proxies to the actual object, and the build process
 
 If your object is never used by your code, it will never be created.
 
+**Next**: [Lifecycle of objects](./05-Lifecycle.md)

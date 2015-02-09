@@ -35,7 +35,7 @@ We have a [getting started](./doc/01-Getting-started.md) guide, followed by more
 - [Injection types](./doc/02-Injection-types.md)
 - [References](./doc/03-References.md)
 - [Activators](./doc/04-Activators.md) 
-- Lifecycle of objects (TODO: Write documentation)
+- [Lifecycle of objects](./doc/05-Lifecycle.md)
 - Remote objects (TODO: Write documentation)
 - Extending the configuration syntax (TODO: Write documentation)
 
