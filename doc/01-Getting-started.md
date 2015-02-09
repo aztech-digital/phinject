@@ -1,4 +1,4 @@
-# Usage
+# Getting started
  
 Phinject is designed to be easy to use. 
  
@@ -44,7 +44,7 @@ echo $helloWorld->getMessage() . PHP_EOL;
 
 While this approach is fine, as your application increases in complexity, it will get very cumbersome to inject all parameters in all classes. Additionnaly, it requires extra logic to customize the injected values depending on your environment.
 
-In order to solve this problem, developpers use a dependency injection container that contains all the parameters for your application, as well as the creation logic of your objects.
+In order to solve this problem, developers use a dependency injection container that contains all the parameters for your application, as well as the creation logic of your objects.
 
 In order to use Phinject, you need a configuration file. So go ahead and add the file `phinject.yml` to your project, in the same folder as `HelloWorld.php`:
 
@@ -74,7 +74,7 @@ $helloWorld = $container->get('helloWorldObject');
 echo $helloWorld->getMessage() . PHP_EOL;
 ```
 
-When you run the `HelloWorld.php`, your code will print:
+When you run the `HelloWorld.php` file, your code will print:
 
 ```
 Hello DI world !
