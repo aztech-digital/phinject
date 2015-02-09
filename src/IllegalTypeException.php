@@ -2,7 +2,9 @@
 
 namespace Aztech\Phinject;
 
-class IllegalTypeException extends \RuntimeException
+use Interop\Container\Exception\ContainerException;
+
+class IllegalTypeException extends \RuntimeException implements ContainerException
 {
 
 }

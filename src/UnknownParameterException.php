@@ -2,7 +2,9 @@
 
 namespace Aztech\Phinject;
 
-class UnknownParameterException extends UnknownDefinitionException
+use Interop\Container\Exception\NotFoundException;
+
+class UnknownParameterException extends UnknownDefinitionException implements NotFoundException
 {
     /**
      * @param string $serviceName

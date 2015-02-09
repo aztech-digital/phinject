@@ -2,7 +2,9 @@
 
 namespace Aztech\Phinject;
 
-class UnknownDefinitionException extends \RuntimeException
+use Interop\Container\Exception\NotFoundException;
+
+class UnknownDefinitionException extends \RuntimeException implements NotFoundException
 {
     private $serviceName;
 

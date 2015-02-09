@@ -2,7 +2,9 @@
 
 namespace Aztech\Phinject\Activators\Remote;
 
-class UnknownProtocolException extends \RuntimeException
+use Interop\Container\Exception\ContainerException;
+
+class UnknownProtocolException extends \RuntimeException implements ContainerException
 {
 
 }

@@ -2,7 +2,9 @@
 
 namespace Aztech\Phinject;
 
-class UnbuildableServiceException extends \RuntimeException
+use Interop\Container\Exception\ContainerException;
+
+class UnbuildableServiceException extends \RuntimeException implements ContainerException
 {
 
 }

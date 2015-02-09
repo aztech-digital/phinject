@@ -2,12 +2,10 @@
 
 namespace Aztech\Phinject;
 
-interface Container extends ReferenceResolver
+use Interop\Container\ContainerInterface;
+
+interface Container extends ReferenceResolver, ContainerInterface
 {
-
-    public function has($serviceName);
-
-    public function get($serviceName);
 
     /**
      * @param string $namespace

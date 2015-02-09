@@ -2,7 +2,9 @@
 
 namespace Aztech\Phinject\Config;
 
-class InvalidConfigurationException extends \RuntimeException
+use Interop\Container\Exception\ContainerException;
+
+class InvalidConfigurationException extends \RuntimeException implements ContainerException
 {
-    
+
 }

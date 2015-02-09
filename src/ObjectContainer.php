@@ -159,14 +159,15 @@ class ObjectContainer implements Container
      * @param string $serviceName
      * @return object @SuppressWarnings(PHPMD.ElseExpression)
      */
-    public
-
-    function &get($serviceName)
+    public function &get($serviceName)
     {
         if ($this->registry->has($serviceName)) {
             $service = $this->registry->getStrict($serviceName);
-        } else {
-            // Else is required due to reference return
+        }
+        elseif ($this->parameterContainer->has($serviceName)) {
+            $service = $this->parameterContainer->get($serviceName);
+        }
+        else {
             $service = $this->resolveService($serviceName);
         }
 

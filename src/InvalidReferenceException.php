@@ -2,7 +2,9 @@
 
 namespace Aztech\Phinject;
 
-class InvalidReferenceException extends \RuntimeException
+use Interop\Container\Exception\ContainerException;
+
+class InvalidReferenceException extends \RuntimeException implements ContainerException
 {
 
 }
