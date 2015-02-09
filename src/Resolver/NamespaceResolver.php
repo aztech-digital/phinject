@@ -16,7 +16,7 @@ class NamespaceResolver implements Resolver
 
     public function accepts($reference)
     {
-        return strpos($reference, '@ns:', 0) === 0;
+        return strpos($reference, '$ns:', 0) === 0;
     }
 
     public function resolve($reference)

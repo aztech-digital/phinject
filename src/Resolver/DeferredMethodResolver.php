@@ -5,6 +5,7 @@ namespace Aztech\Phinject\Resolver;
 use Aztech\Phinject\Container;
 use Aztech\Phinject\InvalidReferenceException;
 use Aztech\Phinject\Util\ArrayResolver;
+use Aztech\Phinject\Util\MethodInvocationDefinition;
 use Aztech\Phinject\Util\MethodNameParser;
 
 class DeferredMethodResolver implements Resolver
@@ -25,7 +26,7 @@ class DeferredMethodResolver implements Resolver
      */
     public function accepts($reference)
     {
-        return substr($reference, 0, 7) == '@defer:';
+        return substr($reference, 0, 7) == '$defer:';
     }
 
     /**
@@ -53,9 +54,8 @@ class DeferredMethodResolver implements Resolver
     }
 
     /**
-     *
-     * @param unknown $reference
-     * @throws InvalidReferenceExceptione
+     * @param string $reference
+     * @throws InvalidReferenceException
      * @return MethodInvocationDefinition
      */
     private function getMethod($reference)

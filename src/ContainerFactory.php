@@ -118,6 +118,15 @@ class ContainerFactory
         return $config;
     }
 
+    private static function getFactory()
+    {
+        if (! self::$factory) {
+            self::$factory = new ServiceBuilderFactory();
+        }
+
+        return self::$factory;
+    }
+
     private static function applyDecorators(Config & $config, ArrayResolver $options)
     {
         if ((bool) $options->resolve('templates', false)) {
