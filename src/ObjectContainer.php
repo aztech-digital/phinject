@@ -69,7 +69,9 @@ class ObjectContainer implements Container, DelegatingContainer
     {
         $this->delegateContainer = $container;
 
-        $this->referenceResolver = new DefaultReferenceResolver($this->delegateContainer);
+        $fallback = ($container == $this) ? null : $this;
+
+        $this->referenceResolver = new DefaultReferenceResolver($this->delegateContainer, $fallback);
         $this->parameterContainer = new ParameterContainer($this, $this->config->resolve('parameters', array()));
     }
 

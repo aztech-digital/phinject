@@ -11,9 +11,9 @@ class UnknownDefinitionException extends \RuntimeException implements NotFoundEx
     /**
      * @param string $serviceName
      */
-    public function __construct($serviceName)
+    public function __construct($serviceName, NotFoundException $previous = null)
     {
-        parent::__construct('Class not configured : ' . $serviceName);
+        parent::__construct('Class not configured : ' . $serviceName, 0, $previous);
 
         $this->serviceName = $serviceName;
     }

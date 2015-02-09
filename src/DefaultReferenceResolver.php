@@ -36,26 +36,30 @@ class DefaultReferenceResolver implements ReferenceResolver
      *
      * @param Container $container
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(ContainerInterface $container, Container $fallback = null)
     {
         $this->container = $container;
 
-        if ($container instanceof Container) {
-            $this->resolvers[] = new NullCoalescingResolver($container);
-            $this->resolvers[] = new DynamicParameterResolver($this);
-            $this->resolvers[] = new DeferredMethodResolver($container);
-            $this->resolvers[] = new NamespaceResolver($container);
-            $this->resolvers[] = new ParameterResolver($container);
+        if (! $fallback && $container instanceof Container) {
+            $fallback = $container;
         }
+
+        if (! $fallback) {
+            throw new \InvalidArgumentException('Fallback container is required.');
+        }
+
+        $this->resolvers[] = new NullCoalescingResolver($fallback);
+        $this->resolvers[] = new DynamicParameterResolver($this);
+        $this->resolvers[] = new DeferredMethodResolver($fallback);
+        $this->resolvers[] = new NamespaceResolver($fallback);
+        $this->resolvers[] = new ParameterResolver($fallback);
 
         $this->resolvers[] = new ServiceResolver($container);
 
-        if ($container instanceof Container) {
-            $this->resolvers[] = new ContainerResolver($container, self::CONTAINER_REGEXP);
-            $this->resolvers[] = new EnvironmentVariableResolver(self::ENVIRONMENT_REGEXP);
-            $this->resolvers[] = new ConstantResolver(self::CONSTANT_REGEXP);
-            $this->resolvers[] = new PassThroughResolver();
-        }
+        $this->resolvers[] = new ContainerResolver($fallback, self::CONTAINER_REGEXP);
+        $this->resolvers[] = new EnvironmentVariableResolver(self::ENVIRONMENT_REGEXP);
+        $this->resolvers[] = new ConstantResolver(self::CONSTANT_REGEXP);
+        $this->resolvers[] = new PassThroughResolver();
     }
 
     /**
@@ -66,7 +70,7 @@ class DefaultReferenceResolver implements ReferenceResolver
      */
     public function resolve($reference)
     {
-        if ($this->canResolveAnonymousReference($reference)) {
+        if ($this->isResolvableAnonymousReference($reference)) {
             try {
                 return $this->container->build($reference);
             }
@@ -82,7 +86,7 @@ class DefaultReferenceResolver implements ReferenceResolver
         return $this->resolveInternal($reference);
     }
 
-    private function canResolveAnonymousReference($reference)
+    private function isResolvableAnonymousReference($reference)
     {
         if (! ($this->container instanceof Container)) {
             return false;

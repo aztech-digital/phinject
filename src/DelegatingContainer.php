@@ -4,7 +4,7 @@ namespace Aztech\Phinject;
 
 use Interop\Container\ContainerInterface;
 
-interface DelegatingContainer
+interface DelegatingContainer extends Container
 {
     function setDelegateContainer(ContainerInterface $container);
 }
