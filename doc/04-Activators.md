@@ -12,6 +12,8 @@ Phinject is easily extensible (more on that later), and provides built-in suppor
 - Method invocation: equivalent of calling a factory method.
 - Lazy activation: creates a proxy to the actual object, so that instanciation is deferred until the object is actually used.
 
+Additionally, you can define whether an object is loaded as a singleton or a new instance is created on every resolve.
+
 ## Constructor-based activation
 
 You already know this one if you've read the previous chapters. Simply define the class name and the arguments required by the constructor:
@@ -20,7 +22,7 @@ You already know this one if you've read the previous chapters. Simply define th
 classes:
     myObject:
         class: \MyClass
-        arguments [ ... ]
+        arguments: [ ... ]
 ```
 
 ## Method invocation based activation
@@ -52,3 +54,34 @@ classes:
     myAltObject:
         builder: @myFactory->createObject(@dependency, ...)
 ```
+
+## Lazy activation of objects
+
+(TODO: Document cases where lazy activation may be needed)
+
+It can be desirable to defer the activation of an object until it is actually used. However, this feature is not provided by Phinject itself, but by the `proxy-manager` package written by Ocramius, so you will need to require it first:
+
+`composer require ocramius/proxy-manager`
+
+Once that is done, you will need to change the initialization code of your container by passing an option array telling it explicitely to enable lazy activation:
+
+```php
+$container = \Aztech\Phinject\ContainerFactory::create('./phinject.yml', [
+    'deferred' => true
+]);
+```
+
+Once lazy-activation is enabled, you can now use the `lazy` key in your object definitions to tell Phinject that the object must be lazily loaded:
+
+```yaml
+classes:
+    myObject:
+        class: \MyClass
+        lazy: true
+        arguments [ ... ]
+```
+
+Lazy-objects are returned as proxies to the actual object, and the build process is only triggered once you use your object in your code. Using your object is defined as either getting or setting a property value, or calling a method on it.
+
+If your object is never used by your code, it will never be created.
+
