@@ -34,7 +34,7 @@ class ContainerFactory
      * @param string $file Path to the JSON configuration file.
      * @param array $options
      *
-     * @return Container
+     * @return DelegatingContainer
      */
     public static function createFromJson($file, array $options = array())
     {
@@ -47,7 +47,7 @@ class ContainerFactory
      * @param string $file Path to the PHP configuration file.
      * @param array $options
      *
-     * @return Container
+     * @return DelegatingContainer
      */
     public static function createFromPhp($file, array $options = array())
     {
@@ -60,7 +60,7 @@ class ContainerFactory
      * @param string $file Path to the YAML configuration file.
      * @param array $options
      *
-     * @return Container
+     * @return DelegatingContainer
      */
     public static function createFromYaml($file, array $options = array())
     {
@@ -73,7 +73,7 @@ class ContainerFactory
      * @param string $yaml The inline Yaml definition.
      * @param array $options
      *
-     * @return Container
+     * @return DelegatingContainer
      */
     public static function createFromInlineYaml($yaml, array $options = array())
     {
@@ -86,7 +86,7 @@ class ContainerFactory
      * @param Config|string $config An instance of Config or the path of a configuration file.
      * @param array $options
      *
-     * @return Container
+     * @return DelegatingContainer
      */
     public static function create($config, array $options = array())
     {

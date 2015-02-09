@@ -3,15 +3,21 @@
 namespace Aztech\Phinject\Resolver;
 
 use Aztech\Phinject\Container;
+use Aztech\Phinject\UnknownDefinitionException;
+use Interop\Container\ContainerInterface;
+use Interop\Container\Exception\NotFoundException;
 
 class ServiceResolver implements Resolver
 {
 
     private $container;
 
-    public function __construct(Container $container)
+    private $fallbackContainer;
+
+    public function __construct(ContainerInterface $container, Container $fallback = null)
     {
         $this->container = $container;
+        $this->fallbackContainer = $fallback;
     }
 
     public function accepts($reference)
@@ -21,6 +27,17 @@ class ServiceResolver implements Resolver
 
     public function resolve($reference)
     {
-        return $this->container->get(substr($reference, 1));
+        $reference = substr($reference, 1);
+
+        try {
+            return $this->container->get($reference);
+        }
+        catch (NotFoundException $exception) {
+            if ($this->fallbackContainer) {
+                return $this->fallbackContainer->get($reference);
+            }
+
+            throw new UnknownDefinitionException($reference, $exception);
+        }
     }
 }

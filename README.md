@@ -16,6 +16,16 @@ Phinject is a simple dependency injection container, with extensible activation 
 composer require aztech/phinject
 ```
 
+## Features
+
+- Compatible with the [container-interop](https://github.com/container-interop/container-interop) specification
+- Compatible with [delegate containers](https://github.com/container-interop/container-interop/blob/master/docs/Delegate-lookup.md).
+- YAML, JSON or PHP based configuration.
+- Lazy-loading dependencies.
+- Remote proxies (undocumented).
+- Aliases (undocumented).
+- Extensible configuration syntax (undocumented).
+
 ## Usage
 
 The documentation is available [here](./doc/).
