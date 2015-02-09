@@ -11,6 +11,9 @@ class FileConfig extends AbstractConfig
 
     private $sourceFile;
 
+    /**
+     * @param string $sourceFile
+     */
     public function __construct(Parser $parser, $sourceFile)
     {
         if (! file_exists($sourceFile)) {
