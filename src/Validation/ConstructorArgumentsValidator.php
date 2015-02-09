@@ -7,6 +7,9 @@ use Aztech\Phinject\Util\ArrayResolver;
 class ConstructorArgumentsValidator implements ConfigurationValidator
 {
 
+    /**
+     * @param string $serviceName
+     */
     public function validateService(Validator $validator, ArrayResolver $global, $serviceName, ArrayResolver $serviceNode)
     {
         $class = $serviceNode->resolve('class');
@@ -79,6 +82,7 @@ class ConstructorArgumentsValidator implements ConfigurationValidator
     /**
      *
      * @param \ReflectionMethod $reflectionCtor
+     * @param Validator $validator
      */
     private function validateConstructorExistence($validator, $reflectionCtor, $ctorArgs)
     {
@@ -96,6 +100,7 @@ class ConstructorArgumentsValidator implements ConfigurationValidator
     /**
      *
      * @param \ReflectionMethod $reflectionCtor
+     * @param Validator $validator
      */
     private function validateConstructorArgsCount($validator, $reflectionCtor, $ctorArgs)
     {
@@ -147,6 +152,7 @@ class ConstructorArgumentsValidator implements ConfigurationValidator
     /**
      *
      * @param string|null $hint
+     * @param Validator $validator
      */
     private function validateHint($validator, $type, $hint)
     {
@@ -159,6 +165,9 @@ class ConstructorArgumentsValidator implements ConfigurationValidator
         }
     }
 
+    /**
+     * @param string $hint
+     */
     private function validateHintEqualsType($hint, $type)
     {
         $typeParts = explode('\\', $type);
@@ -166,6 +175,10 @@ class ConstructorArgumentsValidator implements ConfigurationValidator
         return ! ($type != $hint && $hint != array_pop($typeParts));
     }
 
+    /**
+     * @param string $docComment
+     * @param string $varName
+     */
     private function getHint($docComment, $varName)
     {
         $matches = array();

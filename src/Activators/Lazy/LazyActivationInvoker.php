@@ -31,9 +31,6 @@ class LazyActivationInvoker
     /**
      *
      * @param mixed $object
-     * @param mixed $proxy
-     * @param mixed $method
-     * @param mixed $parameters
      * @param mixed $initializer
      * @return boolean
      */
