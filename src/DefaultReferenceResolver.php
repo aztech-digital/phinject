@@ -54,7 +54,7 @@ class DefaultReferenceResolver implements ReferenceResolver
         $this->resolvers[] = new NamespaceResolver($fallback);
         $this->resolvers[] = new ParameterResolver($fallback);
 
-        $this->resolvers[] = new ServiceResolver($container);
+        $this->resolvers[] = new ServiceResolver($container, $fallback);
 
         $this->resolvers[] = new ContainerResolver($fallback, self::CONTAINER_REGEXP);
         $this->resolvers[] = new EnvironmentVariableResolver(self::ENVIRONMENT_REGEXP);

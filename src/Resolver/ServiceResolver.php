@@ -22,7 +22,7 @@ class ServiceResolver implements Resolver
 
     public function accepts($reference)
     {
-        return substr($reference, 0, 1) == '@' || ! ($this->container instanceof Container);
+        return substr($reference, 0, 1) == '@';
     }
 
     public function resolve($reference)
