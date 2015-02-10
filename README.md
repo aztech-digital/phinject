@@ -25,6 +25,7 @@ composer require aztech/phinject
 - Remote proxies (undocumented).
 - Aliases (undocumented).
 - Extensible configuration syntax (undocumented).
+- Container interoperability (undocumented).
 
 ## Usage
 
