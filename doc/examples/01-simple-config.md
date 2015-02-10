@@ -17,7 +17,7 @@
 
 ## 01-simple-config.php :
 
-`̀ `php
+```php
 <?php
 
     require_once __ DIR__ . '/../../vendor/autoload.php';
