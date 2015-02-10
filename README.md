@@ -6,6 +6,10 @@ Phinject
 [![Code Coverage](https://img.shields.io/scrutinizer/g/aztech-digital/phinject.svg?style=flat)](https://scrutinizer-ci.com/g/aztech-digital/phinject/?branch=master)
 [![HHVM Support](https://img.shields.io/hhvm/aztech/phinject.svg)](http://hhvm.h4cc.de/package/aztech/phinject)
 
+[![License](https://img.shields.io/packagist/l/aztech/phinject.svg?style=flat)](https://packagist.org/packages/aztech/phinject)
+[![Latest Stable Version](https://img.shields.io/packagist/v/aztech/phinject.svg?style=flat)](https://packagist.org/packages/aztech/phinject) 
+
+
 Phinject is a simple dependency injection container, with extensible activation & injection strategies.
 
 ## Setup
