@@ -14,8 +14,8 @@ class ActivatorConfigTest extends \PHPUnit_Framework_TestCase
     {
         $config = <<<YML
 config:
-    plugins:
-        dummy: 
+    activators:
+        dummy:
             class: \Aztech\Phinject\Tests\DummyActivator
             key: dummy-activate
 
@@ -23,50 +23,50 @@ classes:
     dummyObject:
         dummy-activate: testDummy
 YML;
-        
+
         $container = ContainerFactory::createFromInlineYaml($config);
 
         $object = $container->get('dummyObject');
-        
+
         $this->assertInstanceOf('\stdClass', $object);
     }
-    
+
     public function testKeyDefaultsToActivatorKey()
     {
         $config = <<<YML
 config:
-    plugins:
+    activators:
         dummy:
             class: \Aztech\Phinject\Tests\DummyActivator
-        
+
 classes:
     dummyObject:
         dummy: testDummy
 YML;
-        
+
         $container = ContainerFactory::createFromInlineYaml($config);
-        
+
         $object = $container->get('dummyObject');
-        
+
         $this->assertInstanceOf('\stdClass', $object);
     }
-    
+
     public function testScalarValueIsConvertedToArrayConfig()
     {
         $config = <<<YML
 config:
-    plugins:
+    activators:
         dummy: \Aztech\Phinject\Tests\DummyActivator
-        
+
 classes:
     dummyObject:
         dummy: testDummy
 YML;
-        
+
         $container = ContainerFactory::createFromInlineYaml($config);
-        
+
         $object = $container->get('dummyObject');
-        
+
         $this->assertInstanceOf('\stdClass', $object);
     }
 }
