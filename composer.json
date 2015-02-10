@@ -2,7 +2,8 @@
     "name": "aztech/phinject",
     "description": "PHP Dependency Injection Container",
     "type": "library",
-    "homepage": "http://github.com/aztech-dev/phinject",
+    "homepage": "http://aztech-digital.github.io/phinject/",
+    "keywords": [ "di", "dependency-injection", "di-container", "container", "container-interop", "phinject", "dependency", "injection" ],
     "time": "2014-12-26",
     "license": "MIT",
     "authors": [
