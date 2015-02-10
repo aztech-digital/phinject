@@ -1,4 +1,4 @@
-# Simple configuration example
+# Simple configuration example with parameters and classes
 
 ## YAML configuration
 
