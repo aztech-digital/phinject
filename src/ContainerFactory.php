@@ -99,7 +99,11 @@ class ContainerFactory
         $config = self::getConfig($config, $resolver);
         $builderFactory = self::$factory ?: new ServiceBuilderFactory();
 
-        return new ObjectContainer($config, $builderFactory->build($resolver));
+        $serviceBuilderConfig = $config->getResolver()
+            ->resolve('config', [], true)
+            ->merge($resolver);
+        
+        return new ObjectContainer($config, $builderFactory->build($serviceBuilderConfig));
     }
 
     private static function getConfig($config, ArrayResolver $options)
