@@ -46,6 +46,10 @@ class ServiceBuilderFactory
             $activator =  new $activatorClass();
 
             if ($activator instanceof ConfigurationAware) {
+                $activatorConfig = $activatorConfig->merge(
+                    new ArrayResolver([ 'key' => $key ])
+                );
+
                 $activator->setConfiguration($activatorConfig);
             }
 

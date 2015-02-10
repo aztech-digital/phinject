@@ -62,7 +62,7 @@ class ArrayResolver extends Iterator
         $dotted = explode(".", $key);
 
         if (count($dotted) > 1) {
-            $toReturn = $this->walkNameComponents($dotted, $default);
+            $toReturn = $this->walkNameComponents($dotted, $default, false);
         }
         elseif (array_key_exists($key, $this->source)) {
             $toReturn = $this->source[$key];
@@ -70,23 +70,38 @@ class ArrayResolver extends Iterator
 
         return $this->wrapIfNecessary($toReturn, $coerceArray);
     }
-    
+
     public function resolveStrict($key)
     {
-        if (! array_key_exists($key, $this->source)) {
-            throw new \InvalidArgumentException('Key does exist in array.');
+        $dotted = explode(".", $key);
+
+        if (count($dotted) > 1) {
+            try {
+                return $this->wrapIfNecessary($this->walkNameComponents($dotted, null, true));
+            }
+            catch (\InvalidArgumentException $exception) {
+                throw new \InvalidArgumentException(sprintf('Required key "%s" is not set.', $key));
+            }
         }
-        
-        return $this->source[$key];
+
+        if (array_key_exists($key, $this->source)) {
+            return  $this->wrapIfNecessary($this->source[$key]);
+        }
+
+        throw new \InvalidArgumentException(sprintf('Required key "%s" is not set.', $key));
     }
 
-    private function walkNameComponents(array $dotted, $default)
+    private function walkNameComponents(array $dotted, $default, $strict)
     {
         $currentDepthData = $this->source;
 
         foreach ($dotted as $paramKey) {
             if (! array_key_exists($paramKey, $currentDepthData)) {
-                return $default;
+                if (! $strict) {
+                    return $default;
+                }
+
+                throw new \InvalidArgumentException('Key does not exist');
             }
 
             $currentDepthData = $currentDepthData[$paramKey];
