@@ -5,9 +5,16 @@
 ```js
 {
 	"classes": {
+		"Dependency": {
+			"class": "\\stdClass",
+			"properties": {
+				"injected": "injected value"
+			}
+		},
 		"SimpleObject": {
 			"class": "\\stdClass", 
-			"props": {
+			"properties": {
+				"dependentProperty": "@dependency",
 				"property": "value"
 			}
 		}
@@ -20,12 +27,13 @@
 ```php
 <?php
 
-    require_once __ DIR__ . '/../../vendor/autoload.php';
+use Aztech\Phinject\ContainerFactory;
+
+require_once __ DIR__ . '/../../vendor/autoload.php';
     
-    $config = \Aztech\Phinject\Config\ConfigFactory::fromFile(__DIR__ . '/injections.json');
-    $container = \Aztech\Phinject\ContainerFactory::create($config);
+$container = ContainerFactory::create(__DIR__ . '/01-simple-config.json');
+$obj = $container->get('SimpleObject');
     
-    $obj = $container->get('SimpleObject');
-    
-    echo $obj->property . PHP_EOL;
+echo $obj->property . PHP_EOL;
+echo $obj->dependentProperty->injected . PHP_EOL;
 ```
