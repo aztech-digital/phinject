@@ -1,28 +1,47 @@
 # Simple configuration example
 
-## 01-simple-config.json :
+## YAML configuration
+
+### 01-simple-config.yaml :
+
+```yaml
+classes:
+	Dependency:
+	    class: \stdClass
+	    properties:
+	        injected: injected value
+    SimpleObject:
+        class: \stdClass
+        properties:
+            dependentProperty: '@dependency'
+            property: value
+```
+
+## JSON configuration
+
+### 01-simple-config.json :
 
 ```js
 {
-	"classes": {
-		"Dependency": {
-			"class": "\\stdClass",
-			"properties": {
-				"injected": "injected value"
-			}
-		},
-		"SimpleObject": {
-			"class": "\\stdClass", 
-			"properties": {
-				"dependentProperty": "@dependency",
-				"property": "value"
-			}
-		}
-	}
+    "classes": {
+        "Dependency": {
+            "class": "\\stdClass",
+            "properties": {
+                "injected": "injected value"
+            }
+        },
+        "SimpleObject": {
+            "class": "\\stdClass", 
+            "properties": {
+                "dependentProperty": "@dependency",
+                "property": "value"
+            }
+        }
+    }
 }
 ```
 
-## 01-simple-config.php :
+### 01-simple-config.php :
 
 ```php
 <?php
@@ -30,8 +49,11 @@
 use Aztech\Phinject\ContainerFactory;
 
 require_once __ DIR__ . '/../../vendor/autoload.php';
-    
-$container = ContainerFactory::create(__DIR__ . '/01-simple-config.json');
+
+// Update filename accordingly    
+$configFile = __DIR__ . '/01-simple-config.json';
+
+$container = ContainerFactory::create($configFile);
 $obj = $container->get('SimpleObject');
     
 echo $obj->property . PHP_EOL;
