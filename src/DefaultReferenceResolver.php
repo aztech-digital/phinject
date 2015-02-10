@@ -11,6 +11,7 @@ use Aztech\Phinject\Resolver\NamespaceResolver;
 use Aztech\Phinject\Resolver\NullCoalescingResolver;
 use Aztech\Phinject\Resolver\ParameterResolver;
 use Aztech\Phinject\Resolver\PassThroughResolver;
+use Aztech\Phinject\Resolver\Resolver;
 use Aztech\Phinject\Resolver\ServiceResolver;
 use Interop\Container\ContainerInterface;
 
@@ -25,10 +26,20 @@ class DefaultReferenceResolver implements ReferenceResolver
 
     /**
      *
-     * @var Container
+     * @var ContainerInterface
      */
     private $container;
 
+    /**
+     *
+     * @var Container
+     */
+    private $fallbackContainer;
+
+    /**
+     *
+     * @var Resolver[]
+     */
     private $resolvers = array();
 
     /**
@@ -47,6 +58,8 @@ class DefaultReferenceResolver implements ReferenceResolver
         if (! $fallback) {
             throw new \InvalidArgumentException('Fallback container is required.');
         }
+
+        $this->fallbackContainer = $fallback;
 
         $this->resolvers[] = new NullCoalescingResolver($fallback);
         $this->resolvers[] = new DynamicParameterResolver($this);
@@ -72,7 +85,7 @@ class DefaultReferenceResolver implements ReferenceResolver
     {
         if ($this->isResolvableAnonymousReference($reference)) {
             try {
-                return $this->container->build($reference);
+                return $this->fallbackContainer->build($reference);
             }
             catch (\Exception $ex) {
                 if (! isset($reference['isClass']) || ! $reference['isClass']) {
@@ -88,11 +101,7 @@ class DefaultReferenceResolver implements ReferenceResolver
 
     private function isResolvableAnonymousReference($reference)
     {
-        if (! ($this->container instanceof Container)) {
-            return false;
-        }
-
-        return is_object($reference) || is_array($reference);
+        return (is_object($reference) || is_array($reference));
     }
 
     /**
@@ -102,7 +111,7 @@ class DefaultReferenceResolver implements ReferenceResolver
     private function resolveInternal($reference)
     {
         foreach ($this->resolvers as $resolver) {
-            if ($resolver->accepts($reference)) {
+            if (is_scalar($reference) && $resolver->accepts($reference)) {
                 return $resolver->resolve($reference);
             }
         }

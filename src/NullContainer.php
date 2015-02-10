@@ -2,7 +2,9 @@
 
 namespace Aztech\Phinject;
 
-class NullContainer implements Container
+use Interop\Container\ContainerInterface;
+
+class NullContainer implements ContainerInterface
 {
     /**
      * (non-PHPdoc)
@@ -20,32 +22,5 @@ class NullContainer implements Container
     public function get($id)
     {
         throw new UnknownDefinitionException($id);
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see \Aztech\Phinject\Container::getNamespace()
-     */
-    public function getNamespace($namespace)
-    {
-        throw new UnknownDefinitionException($namespace);
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see \Aztech\Phinject\Container::getParameter()
-     */
-    public function getParameter($parameterName)
-    {
-        throw new UnknownDefinitionException($parameterName);
-    }
-
-    /**
-     * (non-PHPdoc)
-     * @see \Aztech\Phinject\Container::hasParameter()
-     */
-    public function hasParameter($parameterName)
-    {
-        return false;
     }
 }
