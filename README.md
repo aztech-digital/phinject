@@ -37,8 +37,8 @@ We have a [getting started](./doc/01-Getting-started.md) guide, followed by more
 - [Activators](./doc/04-Activators.md) 
 - [Lifecycle of objects](./doc/05-Lifecycle.md)
 - Remote objects (TODO: Write documentation)
-- Extending the configuration syntax (TODO: Write documentation)
 - Container interoperability (TODO: Write documentation).
+- [Extending the configuration syntax](./doc/07-Extensibility.md)
 
 **Note** All the documentation examples are written using a YAML based configuration, however, you can also use JSON or PHP configuration files. (TODO: Document usage of PHP & JSON config file)
 

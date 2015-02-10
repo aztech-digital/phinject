@@ -15,6 +15,8 @@ class ServiceBuilderFactory
         $activatorFactory = new DefaultActivatorFactory();
         $injectorFactory = new InjectorFactory();
 
+        $this->bindActivators($activatorFactory, $options);
+        
         if ((bool) $options->resolve('deferred', true) == true) {
             $serviceBuilder = new LazyServiceBuilder($activatorFactory, $injectorFactory);
         }
@@ -23,5 +25,23 @@ class ServiceBuilderFactory
         }
 
         return $serviceBuilder;
+    }
+    
+    private function bindActivators(ActivatorFactory $factory, ArrayResolver $options)
+    {
+        $activators = $options->resolve('plugins', [], false);
+        
+        foreach ($activators as $name => $activatorConfig) 
+        {
+            if (is_string($activatorConfig)) {
+                $activatorConfig = new ArrayResolver([ 'class' => $activatorConfig ]);
+            }
+            
+            $activatorClass = $activatorConfig->resolveStrict('class');
+            $key = $activatorConfig->resolve('key', $name);
+            $activator =  new $activatorClass();
+            
+            $factory->addActivator($key, $activator);
+        }
     }
 }

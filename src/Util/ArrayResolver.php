@@ -70,6 +70,15 @@ class ArrayResolver extends Iterator
 
         return $this->wrapIfNecessary($toReturn, $coerceArray);
     }
+    
+    public function resolveStrict($key)
+    {
+        if (! array_key_exists($key, $this->source)) {
+            throw new \InvalidArgumentException('Key does exist in array.');
+        }
+        
+        return $this->source[$key];
+    }
 
     private function walkNameComponents(array $dotted, $default)
     {
