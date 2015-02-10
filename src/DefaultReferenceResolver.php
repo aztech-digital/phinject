@@ -92,7 +92,7 @@ class DefaultReferenceResolver implements ReferenceResolver
                     return $reference;
                 }
 
-                throw $ex;
+                throw new UnbuildableServiceException('Anonymous reference could not be built.', 0, $ex);
             }
         }
 

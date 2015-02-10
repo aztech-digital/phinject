@@ -43,7 +43,7 @@ class FileConfig extends AbstractConfig
             $data = $this->parser->parse($data);
         }
         catch (\Exception $ex) {
-            throw new InvalidConfigurationException('Invalid file : ' . $filePath);
+            throw new InvalidConfigurationException('Invalid file : ' . $filePath, 0, $ex);
         }
 
         return $data;
