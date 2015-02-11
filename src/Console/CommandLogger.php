@@ -179,37 +179,54 @@ class CommandLogger implements LoggerInterface
     */
     public function log($level, $message, array $context = array())
     {
-
         if ($this->filtering && ! in_array($level, $this->enabled)) {
             return;
         }
 
-        $write = function($level, $message) use($this) {
-            if (array_key_exists($level, self::$levels)) {
-                return call_user_func([ $this, self::$levels[$level]], $message);
-            }
-
-            return $this->formatNone($message);
-        };
-
         if ($this->apply_threshold) {
-            $this->messageStack[] = array($level, $message);
-
-            if (self::$levels[$level] >= $this->threshold) {
-                foreach ($this->messageStack as $stackedMessage) {
-                    list($plevel, $pmessage) = $stackedMessage;
-
-                    $write($plevel, $pmessage);
-                }
-
-                $this->messageStack = array();
-                $this->apply_threshold = false;
-            }
-
-            return;
+            return $this->writeThresholdedMessage($level, $message);
         }
 
-        $write($level, $message);
+        $this->writeMessage($level, $message);
+    }
+
+    private function writeThresholdedMessage($level, $message)
+    {
+        $this->messageStack[] = array($level, $message);
+
+        if (self::$levels[$level] >= $this->threshold) {
+            $this->writeMessageStack();
+
+            $this->messageStack = array();
+            $this->apply_threshold = false;
+        }
+
+        return;
+    }
+
+    private function writeMessageStack()
+    {
+        foreach ($this->messageStack as $stackedMessage) {
+            list($plevel, $pmessage) = $stackedMessage;
+
+            $this->writeMessage($plevel, $pmessage);
+        }
+    }
+
+    private function writeMessage($level, $message)
+    {
+        $level = self::$levels[$level];
+
+        if (array_key_exists($level, self::$formatters)) {
+            return $this->output->writeln(
+                call_user_func([
+                    $this,
+                    self::$formatters[$level]
+                ], $message)
+            );
+        }
+
+        return $this->output->writeln($this->formatNone($message));
     }
 
     private function formatError($message)
