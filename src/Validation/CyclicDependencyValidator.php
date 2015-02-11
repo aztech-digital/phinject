@@ -13,7 +13,12 @@ class CyclicDependencyValidator implements ConfigurationValidator
     {
         $this->currentNodeName = $serviceName;
 
-        foreach ($serviceNode->resolve('props', array()) as $name) {
+        $properties = $serviceNode->resolveArray(
+            'props',
+            $serviceNode->resolveArray('properties', [])->extract()
+        );
+
+        foreach ($properties as $name) {
             $name = substr($name, 1);
             $dependencyNode = $global->resolve('classes.' . $name, array());
 
@@ -29,7 +34,12 @@ class CyclicDependencyValidator implements ConfigurationValidator
 
     private function dependsOnCurrentNode(ArrayResolver $config)
     {
-        foreach ($config->resolve('props', array()) as $dependency) {
+        $dependencies = $config->resolveArray(
+            'props',
+            $config->resolveArray('properties', [])->extract()
+        );
+
+        foreach ($dependencies as $dependency) {
             if (substr($dependency, 0, 1) == '@' && substr($dependency, 1) == $this->currentNodeName) {
                 return true;
             }

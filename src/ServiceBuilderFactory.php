@@ -30,10 +30,9 @@ class ServiceBuilderFactory
 
     private function bindActivators(ActivatorFactory $factory, ArrayResolver $options)
     {
-        $activators = $options->resolve(
+        $activators = $options->resolveArray(
             'activators',
-            $options->resolve('plugins', [], false),
-            false
+            $options->resolveArray('plugins', [])->extract()
         );
 
         foreach ($activators as $name => $activatorConfig)
@@ -67,7 +66,7 @@ class ServiceBuilderFactory
 
     private function bindInjectors(InjectorFactory $factory, ArrayResolver $options)
     {
-        $injectors = $options->resolve('injectors', []);
+        $injectors = $options->resolveArray('injectors', []);
 
         foreach ($injectors as $name => $injectorConfig) {
             if (is_string($injectorConfig)) {

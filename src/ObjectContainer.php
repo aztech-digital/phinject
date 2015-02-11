@@ -59,7 +59,7 @@ class ObjectContainer implements Container, DelegatingContainer
         $this->config = $config->getResolver();
 
         $this->serviceBuilder = $builder;
-        $this->classes = $this->config->resolve('classes', array());
+        $this->classes = $this->config->resolveArray('classes', []);
         $this->registry = new ObjectRegistry();
 
         $this->setDelegateContainer($this);
@@ -70,7 +70,10 @@ class ObjectContainer implements Container, DelegatingContainer
         $this->delegateContainer = $container;
 
         $this->referenceResolver = new DefaultReferenceResolver($this->delegateContainer, $this);
-        $this->parameterContainer = new ParameterContainer($this, $this->config->resolve('parameters', array()));
+        $this->parameterContainer = new ParameterContainer(
+            $this,
+            $this->config->resolveArray('parameters', [])
+        );
     }
 
     public function build($definition, $serviceName = null)
@@ -257,9 +260,9 @@ class ObjectContainer implements Container, DelegatingContainer
      */
     protected function resolveService($serviceName)
     {
-        $serviceConfig = $this->classes->resolve($serviceName, null);
+        $serviceConfig = $this->classes->resolve($serviceName, false);
 
-        if (! $serviceConfig) {
+        if ($serviceConfig == false) {
             throw new UnknownDefinitionException($serviceName);
         }
 

@@ -129,7 +129,7 @@ class ConstructorArgumentsValidator implements ConfigurationValidator
                 break;
             }
 
-            $this->validateArg($global, $reflectionCtor, validator, $i, $args, $parameter);
+            $this->validateArg($global, $reflectionCtor, $validator, $i, $args, $parameter);
         }
     }
 

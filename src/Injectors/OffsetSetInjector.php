@@ -10,7 +10,7 @@ class OffsetSetInjector implements Injector
 {
     public function inject(Container $container, ArrayResolver $serviceConfig, $service)
     {
-        $propConfig = $serviceConfig->resolve('set', []);
+        $propConfig = $serviceConfig->resolveArray('set', []);
 
         foreach($propConfig as $propName => $propValue) {
             $service[$propName] = $container->resolve($propValue);

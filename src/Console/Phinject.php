@@ -19,6 +19,6 @@ class Phinject extends Application
         $commands[] = new TestCommand();
         $commands[] = new ValidateCommand();
 
-        parent::addCommands($commands);
+        $this->addCommands($commands);
     }
 }

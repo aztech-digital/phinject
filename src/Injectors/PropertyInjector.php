@@ -10,7 +10,10 @@ class PropertyInjector implements Injector
 {
     public function inject(Container $container, ArrayResolver $serviceConfig, $service)
     {
-        $propConfig = $serviceConfig->resolve('props', $serviceConfig->resolve('properties', []));
+        $propConfig = $serviceConfig->resolveArray(
+            'props',
+            $serviceConfig->resolveArray('properties', [])->extract()
+        );
 
         foreach($propConfig as $propName => $propValue) {
             $service->$propName = $container->resolve($propValue);

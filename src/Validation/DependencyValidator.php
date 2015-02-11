@@ -16,10 +16,10 @@ class DependencyValidator implements ConfigurationValidator
 
     public function validateService(Validator $validator, ArrayResolver $global, $serviceName, ArrayResolver $serviceNode)
     {
-        $this->validateNode($validator, $global, $serviceNode->resolve('arguments', array()));
+        $this->validateNode($validator, $global, $serviceNode->resolveArray('arguments', []));
 
         $className = $serviceNode->resolve('class');
-        $properties = $serviceNode->resolve('props', array());
+        $properties = $serviceNode->resolveArray('props', []);
         $this->validateNode($validator, $global, $properties);
 
         if ($className == '\stdClass' || ! class_exists($className)) {
@@ -59,7 +59,7 @@ class DependencyValidator implements ConfigurationValidator
                 continue;
             }
 
-            $this->validateNodeArgument();
+            $this->validateNodeArgument($validator, $global, $arg);
         }
     }
 

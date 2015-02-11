@@ -5,6 +5,7 @@ namespace Aztech\Phinject\ServiceBuilder;
 use Aztech\Phinject\ActivatorFactory;
 use Aztech\Phinject\Container;
 use Aztech\Phinject\ServiceBuilder;
+use Aztech\Phinject\TypeInitializer;
 use Aztech\Phinject\Initializer\OnceTypeInitializer;
 use Aztech\Phinject\Injectors\InjectorFactory;
 use Aztech\Phinject\Util\ArrayResolver;

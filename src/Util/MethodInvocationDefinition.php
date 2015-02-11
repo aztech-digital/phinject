@@ -64,7 +64,7 @@ class MethodInvocationDefinition
         }
 
         if (isset($serviceConfig['arguments'])) {
-            return $container->resolveMany($serviceConfig->resolve('arguments')->extract());
+            return $container->resolveMany($serviceConfig->resolveArray('arguments')->extract());
         }
 
         return [];
