@@ -24,6 +24,14 @@ class MethodNameParser
         return strpos($reference, '->') > 0 && strpos($reference, '->') < strlen($reference) - 1;
     }
 
+    public static function parseInvocation($service, $methodName, ArrayResolver $parameters) {
+        if (is_int($methodName)) {
+            return self::getFunctionInvocation($parameters[0]);
+        }
+
+        return new MethodInvocationDefinition($service, $methodName, false, $parameters->extract());
+    }
+
     public static function getMethodInvocation($reference)
     {
         if (! self::isMethodInvocation($reference)) {

@@ -16,7 +16,7 @@ class TemplatedConfigProcessor
     public static function process(ArrayResolver $config)
     {
         $copy = $config->extract();
-        $instances = $config->resolve('apply-templates', array());
+        $instances = $config->resolveArray('apply-templates', []);
 
         foreach ($instances as $name => $instance) {
             self::processTemplate($config, $copy, $name, $instance);
@@ -38,7 +38,7 @@ class TemplatedConfigProcessor
         $template = self::extractTemplate($config, $templateName);
 
         $templateText = json_encode($template->extract());
-        $variables = $instanceDefinition->resolve('apply', array());
+        $variables = $instanceDefinition->resolveArray('apply', []);
 
         foreach ($variables as $variable => $value) {
             $templateText = str_replace(sprintf('{{%s}}', $variable), $value, $templateText);
@@ -62,7 +62,7 @@ class TemplatedConfigProcessor
             throw new \RuntimeException("Template name not declared in '$name'.");
         }
 
-        return $templateName;
+        return (string) $templateName;
     }
 
     /**

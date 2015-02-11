@@ -25,7 +25,7 @@ class OnceTypeInitializer implements TypeInitializer
 
     public function initialize(Container $container, ArrayResolver $serviceConfig)
     {
-        $bootstrap = $serviceConfig->resolve('before.once', [], true);
+        $bootstrap = $serviceConfig->resolveArray('before.once', []);
 
         foreach ($bootstrap as $invocation) {
             if (! $this->shouldInvoke($invocation)) {
@@ -35,6 +35,7 @@ class OnceTypeInitializer implements TypeInitializer
             $method = $this->parser->getMethodInvocation($invocation);
 
             $this->invoker->invokeStatic($container, $method);
+
             self::$invoked[] = $invocation;
         }
     }

@@ -17,7 +17,7 @@ class MethodInvoker
 
         $args = $method->extractArguments($container, new ArrayResolver());
 
-        $this->invokeMethod($container, $method->getOwner(), $method->getName(), $args);
+        $this->invokeMethod($method->getOwner(), $method->getName(), $args);
     }
 
     /**

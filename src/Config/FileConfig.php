@@ -57,7 +57,7 @@ class FileConfig extends AbstractConfig
     {
         $data = $this->getSourcedData($this->sourceFile);
         $root = dirname($this->sourceFile) . DIRECTORY_SEPARATOR;
-        $includes = $data->resolve('include', []);
+        $includes = $data->resolveArray('include', []);
 
         foreach ($includes as $relativeFilePath) {
             $include = $this->getSourcedData($root . $relativeFilePath);

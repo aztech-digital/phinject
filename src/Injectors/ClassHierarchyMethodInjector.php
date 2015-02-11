@@ -5,14 +5,18 @@ namespace Aztech\Phinject\Injectors;
 use Aztech\Phinject\Container;
 use Aztech\Phinject\Injector;
 use Aztech\Phinject\Util\ArrayResolver;
+use Aztech\Phinject\Util\MethodNameParser;
 
 class ClassHierarchyMethodInjector implements Injector
 {
+
+    private $methodNameParser;
 
     private $methodInvoker;
 
     public function __construct()
     {
+        $this->methodNameParser = new MethodNameParser();
         $this->methodInvoker = new MethodInvoker();
     }
 
@@ -20,14 +24,20 @@ class ClassHierarchyMethodInjector implements Injector
     {
         $config = $container->getGlobalConfig();
 
-        foreach ($config->resolve('global.injections', array()) as $baseClassName => $calls)
+        foreach ($config->resolveArray('global.injections', []) as $baseClassName => $calls)
         {
             if (! $this->isInjectionApplicableFor($service, $baseClassName)) {
                 continue;
             }
 
             foreach($calls as $methodName => $parameters) {
-                $this->methodInvoker->invoke($container, $service, $methodName, $parameters);
+                if (! $parameters instanceof ArrayResolver) {
+                    $parameters = new ArrayResolver([ $parameters ]);
+                }
+
+                $methodInvocation = $this->methodNameParser->parseInvocation($service, $methodName, $parameters);
+
+                $this->methodInvoker->invoke($container, $service, $methodInvocation);
             }
         }
 

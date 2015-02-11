@@ -9,14 +9,16 @@ use Symfony\Component\Console\Application;
 
 class Phinject extends Application
 {
-    protected function getDefaultCommands()
+    public function __construct($name = 'Phinject', $version = 'Unknown')
     {
-        $commands = parent::getDefaultCommands();
+        parent::__construct($name, $version);
+
+        $commands = [];
 
         $commands[] = new CompileCommand();
         $commands[] = new TestCommand();
         $commands[] = new ValidateCommand();
 
-        return $commands;
+        parent::addCommands($commands);
     }
 }

@@ -76,6 +76,19 @@ class ArrayResolver extends Iterator
         return $this->wrapIfNecessary($toReturn, $coerceArray);
     }
 
+    /**
+     * Returns the value of a key as an array. If the value identified by the key is not a an array, it will be wrapped in an array.
+     *
+     * @param string $key
+     * @param array $default
+     *
+     * @return ArrayResolver
+     */
+    public function resolveArray($key, array $default = [])
+    {
+        return $this->resolve($key, $default, true);
+    }
+
     public function resolveStrict($key)
     {
         $dotted = explode(".", $key);

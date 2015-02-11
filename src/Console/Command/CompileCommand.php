@@ -13,7 +13,7 @@ class CompileCommand extends Command
     protected function configure()
     {
         $this->setName('compile')
-            ->setDescription('Compile your current Phinject configuration file for production use.')
+            ->setDescription('Compile a dependency injection configuration file for production use.')
             ->addArgument('config-file', InputArgument::REQUIRED, 'Source configuration file');
     }
 

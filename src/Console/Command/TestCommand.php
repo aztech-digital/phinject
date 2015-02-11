@@ -13,7 +13,7 @@ class TestCommand extends Command
     protected function configure()
     {
         $this->setName('test')
-            ->setDescription('Test your current configuration.')
+            ->setDescription('Test a dependency injection configuration file.')
             ->addArgument('config-file', InputArgument::REQUIRED, 'Source configuration file');
     }
 

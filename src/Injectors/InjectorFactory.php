@@ -26,9 +26,4 @@ class InjectorFactory
     {
         return $this->injectors;
     }
-
-    public function clear()
-    {
-        $this->injectors = [];
-    }
 }
