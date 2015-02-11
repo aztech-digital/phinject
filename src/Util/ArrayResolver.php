@@ -7,14 +7,19 @@ use Aztech\Phinject\Iterator;
 class ArrayResolver extends Iterator
 {
 
-    private static $merger = null;
+    private static $mergeUtil = null;
+
+    private static function getMergeUtil()
+    {
+        if (! self::$mergeUtil) {
+            self::$mergeUtil = new Arrays();
+        }
+
+        return self::$mergeUtil;
+    }
 
     public function __construct(array $source = null)
     {
-        if (self::$merger == null) {
-            self::$merger = new Arrays();
-        }
-
         if ($source == null) {
             $source = array();
         }
@@ -44,7 +49,7 @@ class ArrayResolver extends Iterator
 
     public function mergeRecursiveUnique(ArrayResolver $array)
     {
-        return new self(self::$merger->mergeRecursiveUnique($this->source, $array->extract()));
+        return new self(self::getMergeUtil()->mergeRecursiveUnique($this->source, $array->extract()));
     }
 
     /**
@@ -96,18 +101,23 @@ class ArrayResolver extends Iterator
         $currentDepthData = $this->source;
 
         foreach ($dotted as $paramKey) {
-            if (! array_key_exists($paramKey, $currentDepthData)) {
-                if (! $strict) {
-                    return $default;
-                }
-
-                throw new \InvalidArgumentException('Key does not exist');
+            if (! is_array($currentDepthData) || ! array_key_exists($paramKey, $currentDepthData)) {
+                return $this->returnMissingKeyIfNotStrict($strict, $default);
             }
 
             $currentDepthData = $currentDepthData[$paramKey];
         }
 
         return $currentDepthData;
+    }
+
+    private function returnMissingKeyIfNotStrict($strict, $default = null)
+    {
+        if (! $strict) {
+            return $default;
+        }
+
+        throw new \InvalidArgumentException('Key does not exist');
     }
 
     /**

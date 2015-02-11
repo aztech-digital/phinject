@@ -53,6 +53,16 @@ class ArrayResolverTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('other-default', $resolver->resolve('key.other-key', 'other-default'));
     }
 
+    public function testDottedResolutionOfSubKeyOnScalarReturnsDefaultValue()
+    {
+        $data = array('key' => true);
+
+        $resolver = new ArrayResolver($data);
+
+        $this->assertEquals('default', $resolver->resolve('key.sub-key', 'default'));
+        $this->assertEquals('other-default', $resolver->resolve('key.other-key', 'other-default'));
+    }
+
     public function testIterationReturnsCorrectlyWrappedValues()
     {
         $data = array(
@@ -66,5 +76,25 @@ class ArrayResolverTest extends \PHPUnit_Framework_TestCase
         foreach ($resolver as $item) {
             $this->assertTrue($item instanceof ArrayResolver);
         }
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testResolveStrictThrowsException()
+    {
+        $data = new ArrayResolver([ 'present' => true ]);
+
+        $data->resolveStrict('absent');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testResolveStrictWithDottedExpressionThrowsException()
+    {
+        $data = new ArrayResolver([ 'present' => true ]);
+
+        $data->resolveStrict('present.absent');
     }
 }

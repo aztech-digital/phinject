@@ -2,7 +2,6 @@
 
 namespace Aztech\Phinject;
 
-use Aztech\Phinject\Config\AliasedConfig;
 use Aztech\Phinject\Config\ConfigFactory;
 use Aztech\Phinject\Config\TemplatedConfig;
 use Aztech\Phinject\Config\YMLInline;
@@ -102,7 +101,7 @@ class ContainerFactory
         $serviceBuilderConfig = $config->getResolver()
             ->resolve('config', [], true)
             ->merge($resolver);
-        
+
         return new ObjectContainer($config, $builderFactory->build($serviceBuilderConfig));
     }
 
@@ -136,10 +135,6 @@ class ContainerFactory
         if ((bool) $options->resolve('templates', false)) {
             $config = new TemplatedConfig($config);
         }
-
-        if ((bool) $config->getResolver()->resolve('aliases', false)) {
-            $config = new AliasedConfig($config);
-        }
     }
 
     /**
@@ -148,7 +143,7 @@ class ContainerFactory
     private static function loadConfig($config)
     {
         if (! file_exists($config)) {
-            throw new \InvalidArgumentException('Config not found.');
+            throw new \InvalidArgumentException(sprintf('Configuration file "%s" not found.', $config));
         }
 
         $factory = new ConfigFactory();

@@ -32,7 +32,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \Aztech\Phinject\UnknownDefinitionException
      */
     public function testContainerThrowsExceptionOnMissingDependency()
     {
@@ -66,46 +66,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $container = ContainerFactory::create($config);
 
         $this->assertEquals('value', $container->getParameter('param'));
-    }
-
-    /**
-     * @param string $name
-     */
-    private function getCyclicDependencies($name, $singletonForFirst = false, $singletonForOther = false)
-    {
-        $first = array(
-            'class' => '\stdClass',
-            'singleton' => $singletonForFirst,
-            'properties' => array(
-                'cyclic' => '@' . $name . '-dependency'
-            )
-        );
-        $second = array(
-            'class' => '\stdClass',
-            'singleton' => $singletonForOther,
-            'properties' => array(
-                'cyclic' => '@' . $name
-            )
-        );
-
-        return array('classes' => array($name => $first, $name . '-dependency' => $second));
-    }
-
-    public function testCyclicDependenciesDoNotOverflowWithOneSingletonInCycle()
-    {
-        $config = new ArrayConfig($this->getCyclicDependencies('cyclic', true, false));
-        $container = ContainerFactory::create($config, array('deferred' => false));
-
-        $container->get('cyclic');
-    }
-
-    public function testCyclicDependenciesDoNotOverflowWithTwoSingletonsInCycle()
-    {
-        $config = new ArrayConfig($this->getCyclicDependencies('cyclic', true, true));
-
-        $container = ContainerFactory::create($config, array('deferred' => false));
-
-        $container->get('cyclic');
     }
 
     public function testResolvingAManuallyBoundObjectReturnsCorrectInstance()
@@ -171,7 +131,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         $container->lateBind('boundKey', $item);
         $this->assertEquals('value', $container->get('boundKey')->property);
-        
+
         $item = new \stdClass();
         $item->other = 'other';
 
@@ -608,7 +568,7 @@ YML;
         $container = ContainerFactory::createFromInlineYaml($config);
         $container->resolve('$defer:@b');
     }
-    
+
     public function testObjectsAreUpdatedInContainer()
     {
         $config = <<<YML
@@ -621,11 +581,11 @@ YML;
 
         $container = ContainerFactory::createFromInlineYaml($config);
         $time = $container->resolve('@b');
-        
+
         $this->assertEquals(42, $time->getTimestamp());
-        
+
         $time->setTimestamp(23);
-        
+
         $this->assertEquals(23, $container->resolve('@b')->getTimestamp());
     }
 }
