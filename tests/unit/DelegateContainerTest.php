@@ -11,7 +11,7 @@ class DelegateContainerTest extends \PHPUnit_Framework_TestCase
 
     public function testGetReturnsLocalEntriesButDelegatesDependencies()
     {
-        $yml = <<<YML
+        $yaml = <<<YML
 classes:
     lookup:
         class: \stdClass
@@ -22,7 +22,7 @@ YML;
         $delegateContainer = $this->prophesize('\Interop\Container\ContainerInterface');
         $delegateContainer->get('dependency')->willReturn(new \stdClass())->shouldBeCalled();
 
-        $container = ContainerFactory::createFromInlineYaml($yml);
+        $container = ContainerFactory::createFromInlineYaml($yaml);
         $container->setDelegateContainer($delegateContainer->reveal());
 
         $container->get('lookup');
@@ -33,7 +33,7 @@ YML;
      */
     public function testGetDoesNotFallbackToLocalLookupWhenDelegationFails()
     {
-        $yml = <<<YML
+        $yaml = <<<YML
 classes:
     dependency:
         class: \stdClass
@@ -48,7 +48,7 @@ YML;
         $delegateContainer = $this->prophesize('\Interop\Container\ContainerInterface');
         $delegateContainer->get('dependency')->willThrow(new UnknownDefinitionException('dependency'));
 
-        $container = ContainerFactory::createFromInlineYaml($yml);
+        $container = ContainerFactory::createFromInlineYaml($yaml);
         $container->setDelegateContainer($delegateContainer->reveal());
 
         $container->get('lookup');
@@ -56,7 +56,7 @@ YML;
 
     public function testHasReturnsLocalLookupResultAndDoesNotDelegate()
     {
-        $yml = <<<YML
+        $yaml = <<<YML
 classes:
     lookup:
         class: \stdClass
@@ -67,7 +67,7 @@ YML;
         $delegateContainer = $this->prophesize('\Interop\Container\ContainerInterface');
         $delegateContainer->has('missing')->shouldNotBeCalled();
 
-        $container = ContainerFactory::createFromInlineYaml($yml);
+        $container = ContainerFactory::createFromInlineYaml($yaml);
         $container->setDelegateContainer($delegateContainer->reveal());
 
         $this->assertTrue($container->has('lookup'));
@@ -76,7 +76,7 @@ YML;
 
     public function testDelegateLookupWithAggregateRootSucceeds()
     {
-        $ymlA = <<<YML
+        $yamlA = <<<YML
 classes:
     lookup:
         class: \stdClass
@@ -84,7 +84,7 @@ classes:
             test: @dependency
 YML;
 
-        $ymlB = <<<YML
+        $yamlB = <<<YML
 classes:
     dependency:
         class: \stdClass
@@ -92,8 +92,8 @@ classes:
             property: "value"
 YML;
 
-        $containerA = ContainerFactory::createFromInlineYaml($ymlA);
-        $containerB = ContainerFactory::createFromInlineYaml($ymlB);
+        $containerA = ContainerFactory::createFromInlineYaml($yamlA);
+        $containerB = ContainerFactory::createFromInlineYaml($yamlB);
 
         $aggregateRoot = new AggregateContainer();
         $containerA->setDelegateContainer($aggregateRoot);
@@ -114,9 +114,49 @@ YML;
         $this->assertEquals('value', $dependency->property);
     }
 
+    public function testDelegateLookupWithAggregateRootSucceedsWithReversedOrder()
+    {
+        $yamlA = <<<YML
+classes:
+    lookup:
+        class: \stdClass
+        properties:
+            test: @dependency
+YML;
+
+        $yamlB = <<<YML
+classes:
+    dependency:
+        class: \stdClass
+        properties:
+            property: "value"
+YML;
+
+        $containerA = ContainerFactory::createFromInlineYaml($yamlA);
+        $containerB = ContainerFactory::createFromInlineYaml($yamlB);
+
+        $aggregateRoot = new AggregateContainer();
+        $containerA->setDelegateContainer($aggregateRoot);
+
+        $aggregateRoot->addContainer($containerB);
+        $aggregateRoot->addContainer($containerA);
+
+        $this->assertTrue($aggregateRoot->has('lookup'));
+        $this->assertTrue($aggregateRoot->has('dependency'));
+
+        $lookup = $aggregateRoot->get('lookup');
+        $dependency = $aggregateRoot->get('dependency');
+
+        $this->assertInstanceOf('\stdClass', $lookup);
+        $this->assertInstanceOf('\stdClass', $dependency);
+
+        $this->assertSame($dependency, $lookup->test);
+        $this->assertEquals('value', $dependency->property);
+    }
+
     public function testDelegateLookupWithAggregateLoopsBackToContainer()
     {
-        $ymlA = <<<YML
+        $yamlA = <<<YML
 classes:
     lookup:
         class: \stdClass
@@ -128,7 +168,7 @@ classes:
             property: "local"
 YML;
 
-        $containerA = ContainerFactory::createFromInlineYaml($ymlA);
+        $containerA = ContainerFactory::createFromInlineYaml($yamlA);
         $containerB = $this->prophesize('\Interop\Container\ContainerInterface');
 
         $containerB->has('dependencyLocal')->willReturn(false)->shouldBeCalled();
