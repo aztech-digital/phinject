@@ -20,6 +20,15 @@ class CommandLogger implements LoggerInterface
         'emergency' => 7
     );
 
+    private static $formatters = array(
+        1 => 'formatInfo',
+        3 => 'formatWarning',
+        4 => 'formatError',
+        5 => 'formatError',
+        6 => 'formatError',
+        7 => 'formatError'
+    );
+
     private $messageStack = array();
 
     private $threshold = null;
@@ -175,21 +184,12 @@ class CommandLogger implements LoggerInterface
             return;
         }
 
-        $output = $this->output;
+        $write = function($level, $message) use($this) {
+            if (array_key_exists($level, self::$levels)) {
+                return call_user_func([ $this, self::$levels[$level]], $message);
+            }
 
-        $write = function($level, $message) use($output) {
-            if ($level == LogLevel::ERROR) {
-                $output->writeln(sprintf('<error>%s</error>', $message));
-            }
-            elseif ($level == LogLevel::WARNING) {
-                $output->writeln(sprintf('<comment>%s</comment>', $message));
-            }
-            elseif ($level == LogLevel::INFO) {
-                $output->writeln(sprintf('<fg=green>%s</fg=green>', $message));
-            }
-            else {
-                $output->writeln($message);
-            }
+            return $this->formatNone($message);
         };
 
         if ($this->apply_threshold) {
@@ -210,6 +210,26 @@ class CommandLogger implements LoggerInterface
         }
 
         $write($level, $message);
+    }
+
+    private function formatError($message)
+    {
+        return sprintf('<error>%s</error>', $message);
+    }
+
+    private function formatWarning($message)
+    {
+        return sprintf('<comment>%s</comment>', $message);
+    }
+
+    private function formatInfo($message)
+    {
+        return sprintf('<fg=green>%s</fg=green>', $message);
+    }
+
+    private function formatNone($message)
+    {
+        return $message;
     }
 
     public function resetStack() {
