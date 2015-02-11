@@ -33,7 +33,7 @@ class ReferenceResolverTest extends \PHPUnit_Framework_TestCase
     {
         $reference = '$container';
 
-        $resolver = new DefaultReferenceResolver($this->container);
+        $resolver = new DefaultReferenceResolver($this->container, $this->container);
         $resolverResult = $resolver->resolve($reference);
 
         $this->assertSame($this->container, $resolverResult);
@@ -44,7 +44,7 @@ class ReferenceResolverTest extends \PHPUnit_Framework_TestCase
         define(md5(__METHOD__), 'foobarbaz');
         $reference = '$const.' . md5(__METHOD__);
 
-        $resolver = new DefaultReferenceResolver($this->container);
+        $resolver = new DefaultReferenceResolver($this->container, $this->container);
         $resolverResult = $resolver->resolve($reference);
 
         $this->assertSame('foobarbaz', $resolverResult);
@@ -56,7 +56,7 @@ class ReferenceResolverTest extends \PHPUnit_Framework_TestCase
         putenv(md5(__METHOD__) . '=foobarbaz');
         $reference = '$env.' . md5(__METHOD__);
 
-        $resolver = new DefaultReferenceResolver($this->container);
+        $resolver = new DefaultReferenceResolver($this->container, $this->container);
         $resolverResult = $resolver->resolve($reference);
         $this->assertSame('foobarbaz', $resolverResult);
     }
@@ -65,7 +65,7 @@ class ReferenceResolverTest extends \PHPUnit_Framework_TestCase
     {
         $reference = '@service';
 
-        $resolver = new DefaultReferenceResolver($this->container);
+        $resolver = new DefaultReferenceResolver($this->container, $this->container);
 
         $this->assertEquals('injected-service', $resolver->resolve($reference));
     }
@@ -74,7 +74,7 @@ class ReferenceResolverTest extends \PHPUnit_Framework_TestCase
     {
         $reference = '%parameter';
 
-        $resolver = new DefaultReferenceResolver($this->container);
+        $resolver = new DefaultReferenceResolver($this->container, $this->container);
 
         $this->assertEquals('injected-parameter', $resolver->resolve($reference));
     }
@@ -83,7 +83,7 @@ class ReferenceResolverTest extends \PHPUnit_Framework_TestCase
     {
         $reference = 'some value';
 
-        $resolver = new DefaultReferenceResolver($this->container);
+        $resolver = new DefaultReferenceResolver($this->container, $this->container);
 
         $this->assertEquals($reference, $resolver->resolve($reference));
     }
@@ -93,7 +93,7 @@ class ReferenceResolverTest extends \PHPUnit_Framework_TestCase
         $references = array('@service', '%parameter', 'some value');
         $expected = array('injected-service', 'injected-parameter', 'some value');
 
-        $resolver = new DefaultReferenceResolver($this->container);
+        $resolver = new DefaultReferenceResolver($this->container, $this->container);
 
         $this->assertEquals($expected, $resolver->resolveMany($references));
     }
@@ -106,7 +106,7 @@ class ReferenceResolverTest extends \PHPUnit_Framework_TestCase
         );
 
         $reference = '%parameter ?: default value';
-        $resolver = new DefaultReferenceResolver($container);
+        $resolver = new DefaultReferenceResolver($container, $container);
 
         $this->assertEquals('default value', $resolver->resolve($reference));
     }

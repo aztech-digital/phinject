@@ -61,18 +61,25 @@ class DefaultActivatorFactory implements ActivatorFactory
      */
     public function getActivator($serviceName, ArrayResolver $configuration)
     {
-        foreach ($this->customActivators as $name => $activator) {
-            if ($configuration->resolve($name, null)) {
-                return $activator;
-            }
+        if ($activator = $this->resolveActivator($this->customActivators, $configuration)) {
+            return $activator;
         }
 
-        foreach ($this->activators as $name => $activator) {
-            if ($configuration->resolve($name, null)) {
-                return $activator;
-            }
+        if ($activator = $this->resolveActivator($this->activators, $configuration)) {
+            return $activator;
         }
 
         throw new UnbuildableServiceException(sprintf("Unbuildable service : '%s', no suitable activator found.", $serviceName));
+    }
+
+    private function resolveActivator(array $activators, ArrayResolver $configuration)
+    {
+        foreach ($activators as $name => $activator) {
+            if ($configuration->resolve($name, null)) {
+                return $activator;
+            }
+        }
+
+        return null;
     }
 }

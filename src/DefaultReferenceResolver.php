@@ -47,18 +47,9 @@ class DefaultReferenceResolver implements ReferenceResolver
      *
      * @param Container $container
      */
-    public function __construct(ContainerInterface $container, Container $mainContainer = null)
+    public function __construct(ContainerInterface $container, Container $mainContainer)
     {
         $this->container = $container;
-
-        if (! $mainContainer && $container instanceof Container) {
-            $mainContainer = $container;
-        }
-
-        if (! $mainContainer) {
-            throw new \InvalidArgumentException('Main container is required.');
-        }
-
         $this->mainContainer = $mainContainer;
 
         $this->resolvers[] = new NullCoalescingResolver($mainContainer);

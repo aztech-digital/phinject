@@ -34,6 +34,7 @@ class DependencyValidator implements ConfigurationValidator
     }
 
     /**
+     *
      * @param Validator $validator
      */
     private function validateProperty($validator, $className, $propertyName)
@@ -58,18 +59,24 @@ class DependencyValidator implements ConfigurationValidator
                 continue;
             }
 
-            $prefix = substr($arg, 0, 1);
-            $partial = substr($arg, 1);
+            $this->validateNodeArgument();
+        }
+    }
 
-            if ($prefix == '@') {
-                $this->validateServiceNode($validator, $global, $partial);
-            } elseif ($prefix == '%') {
-                $this->validateParamNode($validator, $global, $partial);
-            }
+    private function validateNodeArgument(Validator $validator, ArrayResolver $global, $arg)
+    {
+        $prefix = substr($arg, 0, 1);
+        $partial = substr($arg, 1);
+
+        if ($prefix == '@') {
+            $this->validateServiceNode($validator, $global, $partial);
+        } elseif ($prefix == '%') {
+            $this->validateParamNode($validator, $global, $partial);
         }
     }
 
     /**
+     *
      * @param Validator $validator
      * @param ArrayResolver $global
      * @param string $partial
@@ -84,6 +91,7 @@ class DependencyValidator implements ConfigurationValidator
     }
 
     /**
+     *
      * @param Validator $validator
      * @param ArrayResolver $global
      * @param string $partial
