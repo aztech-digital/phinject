@@ -14,13 +14,19 @@ class ConfigFactory
             throw new \InvalidArgumentException("File not found : " . $path);
         }
 
+        $path = self::getCompiledPathIfAvailable($path, $disableGenerated);
+        $parser = self::getParserFromExtension($path);
+
+        return new FileConfig($parser, $path);
+    }
+
+    private static function getCompiledPathIfAvailable($path, $disableGenerated)
+    {
         if (file_exists($path . '.phin') && ! $disableGenerated) {
             $path .= '.phin';
         }
 
-        $parser = self::getParserFromExtension($path);
-
-        return new FileConfig($parser, $path);
+        return $path;
     }
 
     private static function getParserFromExtension($path)

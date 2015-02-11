@@ -8,6 +8,7 @@ class ConstructorArgumentsValidator implements ConfigurationValidator
 {
 
     /**
+     *
      * @param string $serviceName
      */
     public function validateService(Validator $validator, ArrayResolver $global, $serviceName, ArrayResolver $serviceNode)
@@ -128,25 +129,26 @@ class ConstructorArgumentsValidator implements ConfigurationValidator
                 break;
             }
 
-            if (is_array($args[$i])) {
-                $this->validateService($validator, $global, 'Anonymous definition ' . $i, new ArrayResolver($args[$i]));
-
-                continue;
-            }
-
-            if (substr($args[$i], 0, 4) == '@ns:') {
-                $validator->addWarning('Namespace resolution syntax not supported yet. (triggered by ' . $args[$i] . ').');
-
-                continue;
-            }
-
-            $hint = $this->getHint($reflectionCtor->getDocComment(), $parameter->getName());
-            $type = $this->resolveType($global, $args[$i]);
-
-            $this->validateHint($validator, $type, $hint);
-
-            $i ++;
+            $this->validateArg($global, $reflectionCtor, validator, $i, $args, $parameter);
         }
+    }
+
+    private function validateArg($global, $reflectionCtor, $validator, & $i, $args, $parameter)
+    {
+        if (is_array($args[$i])) {
+            return $this->validateService($validator, $global, 'Anonymous definition ' . $i, new ArrayResolver($args[$i]));
+        }
+
+        if (substr($args[$i], 0, 4) == '@ns:') {
+            return $validator->addWarning('Namespace resolution syntax not supported yet. (triggered by ' . $args[$i] . ').');
+        }
+
+        $hint = $this->getHint($reflectionCtor->getDocComment(), $parameter->getName());
+        $type = $this->resolveType($global, $args[$i]);
+
+        $this->validateHint($validator, $type, $hint);
+
+        $i ++;
     }
 
     /**
@@ -166,6 +168,7 @@ class ConstructorArgumentsValidator implements ConfigurationValidator
     }
 
     /**
+     *
      * @param string $hint
      */
     private function validateHintEqualsType($hint, $type)
@@ -176,6 +179,7 @@ class ConstructorArgumentsValidator implements ConfigurationValidator
     }
 
     /**
+     *
      * @param string $docComment
      * @param string $varName
      */

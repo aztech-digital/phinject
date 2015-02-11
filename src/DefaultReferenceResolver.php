@@ -84,16 +84,7 @@ class DefaultReferenceResolver implements ReferenceResolver
     public function resolve($reference)
     {
         if ($this->isResolvableAnonymousReference($reference)) {
-            try {
-                return $this->mainContainer->build($reference);
-            }
-            catch (\Exception $ex) {
-                if (! isset($reference['isClass']) || ! $reference['isClass']) {
-                    return $reference;
-                }
-
-                throw new UnbuildableServiceException('Anonymous reference could not be built.', 0, $ex);
-            }
+            return $this->resolveAnonymousReference($reference);
         }
 
         return $this->resolveInternal($reference);
@@ -102,6 +93,20 @@ class DefaultReferenceResolver implements ReferenceResolver
     private function isResolvableAnonymousReference($reference)
     {
         return (is_object($reference) || is_array($reference));
+    }
+
+    private function resolveAnonymousReference($reference)
+    {
+        try {
+            return $this->mainContainer->build($reference);
+        }
+        catch (\Exception $ex) {
+            if (! isset($reference['isClass']) || ! $reference['isClass']) {
+                return $reference;
+            }
+
+            throw new UnbuildableServiceException('Anonymous reference could not be built.', 0, $ex);
+        }
     }
 
     /**

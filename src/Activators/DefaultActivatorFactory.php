@@ -13,6 +13,7 @@ use Aztech\Phinject\Activators\Remote\RemoteActivator;
 use Aztech\Phinject\Activators\Remote\RemoteAdapterFactory;
 use Aztech\Phinject\Util\ArrayResolver;
 use Aztech\Phinject\Util\MethodNameParser;
+use Aztech\Phinject\Activators\Reflection\InvocationActivator;
 
 class DefaultActivatorFactory implements ActivatorFactory
 {
@@ -21,18 +22,12 @@ class DefaultActivatorFactory implements ActivatorFactory
 
     private $customActivators = array();
 
-    private $methodNameParser;
-
     public function __construct()
     {
+        $this->addInternalActivator('remote', new RemoteActivator(new RemoteAdapterFactory()));
+        $this->addInternalActivator('builder', new InvocationActivator());
         $this->addInternalActivator('alias', new AliasActivator());
-        $this->addInternalActivator('default', new ReflectionActivator());
-        $this->addInternalActivator('builder', new InstanceInvocationActivator());
-        $this->addInternalActivator('builder-static', new StaticInvocationActivator());
-        $remoteFactory = new RemoteAdapterFactory();
-        $this->addInternalActivator('remote', new RemoteActivator($remoteFactory));
-
-        $this->methodNameParser = new MethodNameParser();
+        $this->addInternalActivator('class', new ReflectionActivator());
     }
 
     /**
@@ -66,63 +61,18 @@ class DefaultActivatorFactory implements ActivatorFactory
      */
     public function getActivator($serviceName, ArrayResolver $configuration)
     {
-        if ($configuration->resolve('alias', null)) {
-            return $this->activators['alias'];
-        }
-
-        if ($builder = $configuration->resolve('builder', null)) {
-            return $this->getActivatorByBuilderType($serviceName, $builder);
-        }
-
-        if ($configuration->resolve('class', false) !== false) {
-            return $this->getRemoteOrReflectionActivator($configuration);
-        }
-
         foreach ($this->customActivators as $name => $activator) {
             if ($configuration->resolve($name, null)) {
                 return $activator;
             }
         }
 
-        throw new UnbuildableServiceException(sprintf("Unbuildable service : '%s', no suitable activator found.", $serviceName));
-    }
-
-    /**
-     * @param string $serviceName
-     */
-    private function getActivatorByBuilderType($serviceName, $builder)
-    {
-        $builderType = $this->getBuilderType($serviceName, $builder);
-
-        if (array_key_exists($builderType, $this->activators)) {
-            return $this->activators[$builderType];
+        foreach ($this->activators as $name => $activator) {
+            if ($configuration->resolve($name, null)) {
+                return $activator;
+            }
         }
 
         throw new UnbuildableServiceException(sprintf("Unbuildable service : '%s', no suitable activator found.", $serviceName));
-    }
-
-    private function getBuilderType($serviceName, $builderKey)
-    {
-        if ($this->methodNameParser->isStaticInvocation($builderKey)) {
-            return 'builder-static';
-        }
-
-        if ($this->methodNameParser->isInstanceInvocation($builderKey)) {
-            return 'builder';
-        }
-
-        throw new UnbuildableServiceException(sprintf("Unbuildable service : '%s', no suitable activator found.", $serviceName));
-    }
-
-    /**
-     * @param ArrayResolver $configuration
-     */
-    private function getRemoteOrReflectionActivator($configuration)
-    {
-        if ($configuration->resolve('remote', false)) {
-            return $this->activators['remote'];
-        }
-
-        return $this->activators['default'];
     }
 }

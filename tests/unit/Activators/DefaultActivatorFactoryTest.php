@@ -19,8 +19,7 @@ class DefaultActivatorFactoryTest extends \PHPUnit_Framework_TestCase
     public function getInvalidServiceConfigurations()
     {
         return array(
-            array(new ArrayResolver(array())),
-            array(new ArrayResolver(array('class' => '\DummyClass', 'builder' => '\invalidBuilderDefinition')))
+            array(new ArrayResolver(array()))
         );
     }
 
@@ -38,7 +37,7 @@ class DefaultActivatorFactoryTest extends \PHPUnit_Framework_TestCase
         $serviceConfig = new ArrayResolver(array('class' => '\DummyClass', 'builder' => '\DummyBuilder::dummyFactoryMethod'));
 
         $this->assertInstanceOf(
-            '\Aztech\Phinject\Activators\Reflection\StaticInvocationActivator',
+            '\Aztech\Phinject\Activators\Reflection\InvocationActivator',
             $this->factory->getActivator('myService', $serviceConfig)
         );
     }
@@ -48,7 +47,7 @@ class DefaultActivatorFactoryTest extends \PHPUnit_Framework_TestCase
         $serviceConfig = new ArrayResolver(array('class' => '\DummyClass', 'builder' => '@DummyBuilder->dummyFactoryMethod'));
 
         $this->assertInstanceOf(
-            '\Aztech\Phinject\Activators\Reflection\InstanceInvocationActivator',
+            '\Aztech\Phinject\Activators\Reflection\InvocationActivator',
             $this->factory->getActivator('myService', $serviceConfig)
         );
     }
