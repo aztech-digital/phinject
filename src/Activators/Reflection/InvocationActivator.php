@@ -2,8 +2,8 @@
 
 namespace Aztech\Phinject\Activators\Reflection;
 
-use Aztech\Phinject\Container;
 use Aztech\Phinject\Activator;
+use Aztech\Phinject\Container;
 use Aztech\Phinject\UnbuildableServiceException;
 use Aztech\Phinject\Util\ArrayResolver;
 use Aztech\Phinject\Util\MethodNameParser;

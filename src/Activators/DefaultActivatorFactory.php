@@ -6,14 +6,11 @@ use Aztech\Phinject\Activator;
 use Aztech\Phinject\ActivatorFactory;
 use Aztech\Phinject\UnbuildableServiceException;
 use Aztech\Phinject\Activators\Reflection\AliasActivator;
-use Aztech\Phinject\Activators\Reflection\InstanceInvocationActivator;
+use Aztech\Phinject\Activators\Reflection\InvocationActivator;
 use Aztech\Phinject\Activators\Reflection\ReflectionActivator;
-use Aztech\Phinject\Activators\Reflection\StaticInvocationActivator;
 use Aztech\Phinject\Activators\Remote\RemoteActivator;
 use Aztech\Phinject\Activators\Remote\RemoteAdapterFactory;
 use Aztech\Phinject\Util\ArrayResolver;
-use Aztech\Phinject\Util\MethodNameParser;
-use Aztech\Phinject\Activators\Reflection\InvocationActivator;
 
 class DefaultActivatorFactory implements ActivatorFactory
 {
@@ -22,9 +19,11 @@ class DefaultActivatorFactory implements ActivatorFactory
 
     private $customActivators = array();
 
-    public function __construct()
+    public function __construct(RemoteAdapterFactory $remoteFactory = null)
     {
-        $this->addInternalActivator('remote', new RemoteActivator(new RemoteAdapterFactory()));
+        $remoteFactory = $remoteFactory ?: new RemoteAdapterFactory();
+
+        $this->addInternalActivator('remote', new RemoteActivator($remoteFactory));
         $this->addInternalActivator('builder', new InvocationActivator());
         $this->addInternalActivator('alias', new AliasActivator());
         $this->addInternalActivator('class', new ReflectionActivator());
