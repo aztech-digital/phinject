@@ -14,10 +14,11 @@ class ServiceResolver implements Resolver
 
     private $fallbackContainer;
 
-    public function __construct(ContainerInterface $container, Container $fallback = null)
+    private $firstResolveCall = true;
+
+    public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->fallbackContainer = $fallback;
     }
 
     public function accepts($reference)
@@ -29,15 +30,6 @@ class ServiceResolver implements Resolver
     {
         $reference = substr($reference, 1);
 
-        try {
-            return $this->container->get($reference);
-        }
-        catch (NotFoundException $exception) {
-            if ($this->fallbackContainer) {
-                return $this->fallbackContainer->get($reference);
-            }
-
-            throw new UnknownDefinitionException($reference, $exception);
-        }
+        return $this->container->get($reference);
     }
 }

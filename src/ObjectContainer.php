@@ -62,7 +62,7 @@ class ObjectContainer implements Container, DelegatingContainer
         $this->classes = $this->config->resolve('classes', array());
         $this->registry = new ObjectRegistry();
 
-        $this->setDelegateContainer(new NullContainer());
+        $this->setDelegateContainer($this);
     }
 
     public function setDelegateContainer(ContainerInterface $container)
@@ -266,7 +266,7 @@ class ObjectContainer implements Container, DelegatingContainer
         try {
             $service = $this->loadService($serviceName, $serviceConfig);
         } catch (UnknownDefinitionException $ex) {
-            throw new \RuntimeException(sprintf("Dependency '%s' not found while trying to build '%s'.", $ex->getServiceName(), $serviceName));
+            throw new UnknownDefinitionException(sprintf("Dependency '%s' not found while trying to build '%s'.", $ex->getServiceName(), $serviceName));
         }
 
         return $service;

@@ -34,7 +34,7 @@ class DefaultReferenceResolver implements ReferenceResolver
      *
      * @var Container
      */
-    private $fallbackContainer;
+    private $mainContainer;
 
     /**
      *
@@ -47,29 +47,29 @@ class DefaultReferenceResolver implements ReferenceResolver
      *
      * @param Container $container
      */
-    public function __construct(ContainerInterface $container, Container $fallback = null)
+    public function __construct(ContainerInterface $container, Container $mainContainer = null)
     {
         $this->container = $container;
 
-        if (! $fallback && $container instanceof Container) {
-            $fallback = $container;
+        if (! $mainContainer && $container instanceof Container) {
+            $mainContainer = $container;
         }
 
-        if (! $fallback) {
-            throw new \InvalidArgumentException('Fallback container is required.');
+        if (! $mainContainer) {
+            throw new \InvalidArgumentException('Main container is required.');
         }
 
-        $this->fallbackContainer = $fallback;
+        $this->mainContainer = $mainContainer;
 
-        $this->resolvers[] = new NullCoalescingResolver($fallback);
+        $this->resolvers[] = new NullCoalescingResolver($mainContainer);
         $this->resolvers[] = new DynamicParameterResolver($this);
-        $this->resolvers[] = new DeferredMethodResolver($fallback);
-        $this->resolvers[] = new NamespaceResolver($fallback);
-        $this->resolvers[] = new ParameterResolver($fallback);
+        $this->resolvers[] = new DeferredMethodResolver($mainContainer);
+        $this->resolvers[] = new NamespaceResolver($mainContainer);
+        $this->resolvers[] = new ParameterResolver($mainContainer);
 
-        $this->resolvers[] = new ServiceResolver($container, $fallback);
+        $this->resolvers[] = new ServiceResolver($container);
 
-        $this->resolvers[] = new ContainerResolver($fallback, self::CONTAINER_REGEXP);
+        $this->resolvers[] = new ContainerResolver($mainContainer, self::CONTAINER_REGEXP);
         $this->resolvers[] = new EnvironmentVariableResolver(self::ENVIRONMENT_REGEXP);
         $this->resolvers[] = new ConstantResolver(self::CONSTANT_REGEXP);
         $this->resolvers[] = new PassThroughResolver();
@@ -85,7 +85,7 @@ class DefaultReferenceResolver implements ReferenceResolver
     {
         if ($this->isResolvableAnonymousReference($reference)) {
             try {
-                return $this->fallbackContainer->build($reference);
+                return $this->mainContainer->build($reference);
             }
             catch (\Exception $ex) {
                 if (! isset($reference['isClass']) || ! $reference['isClass']) {
