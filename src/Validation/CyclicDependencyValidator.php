@@ -13,31 +13,38 @@ class CyclicDependencyValidator implements ConfigurationValidator
     {
         $this->currentNodeName = $serviceName;
 
-        $properties = $serviceNode->resolveArray(
-            'props',
-            $serviceNode->resolveArray('properties', [])->extract()
-        );
+        $properties = $serviceNode->resolveArray('props', $serviceNode->resolveArray('properties', [])
+            ->extract());
 
         foreach ($properties as $name) {
             $name = substr($name, 1);
-            $dependencyNode = $global->resolve('classes.' . $name, array());
+            $dependencyNode = $global->resolveArray('classes.' . $name, []);
 
-            if ($this->dependsOnCurrentNode($dependencyNode)) {
-                if ($this->hasOneSingleton($serviceNode, $dependencyNode)) {
-                    $validator->addWarning('Cyclic dependency detected with ' . $name);
-                } else {
-                    $validator->addError('Unsatisfiable cyclic dependency detected with ' . $name);
-                }
-            }
+            $this->validateProperty($validator, $serviceNode, $dependencyNode, $name);
         }
+    }
+
+    /**
+     *
+     * @param validator
+     */
+    private function validateProperty($validator, $serviceNode, $dependencyNode, $name)
+    {
+        if (! $this->dependsOnCurrentNode($dependencyNode)) {
+            return;
+        }
+
+        if ($this->hasOneSingleton($serviceNode, $dependencyNode)) {
+            return $validator->addWarning('Cyclic dependency detected with ' . $name);
+        }
+
+        return $validator->addError('Unsatisfiable cyclic dependency detected with ' . $name);
     }
 
     private function dependsOnCurrentNode(ArrayResolver $config)
     {
-        $dependencies = $config->resolveArray(
-            'props',
-            $config->resolveArray('properties', [])->extract()
-        );
+        $dependencies = $config->resolveArray('props', $config->resolveArray('properties', [])
+            ->extract());
 
         foreach ($dependencies as $dependency) {
             if (substr($dependency, 0, 1) == '@' && substr($dependency, 1) == $this->currentNodeName) {

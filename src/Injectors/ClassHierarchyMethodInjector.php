@@ -30,22 +30,33 @@ class ClassHierarchyMethodInjector implements Injector
                 continue;
             }
 
-            foreach($calls as $methodName => $parameters) {
-                if (! $parameters instanceof ArrayResolver) {
-                    $parameters = new ArrayResolver([ $parameters ]);
-                }
-
-                $methodInvocation = $this->methodNameParser->parseInvocation($service, $methodName, $parameters);
-
-                $this->methodInvoker->invoke($container, $service, $methodInvocation);
-            }
+            $this->applyInjection($container, $calls, $service);
         }
 
         return true;
     }
 
+    private function applyInjection(Container $container, $calls, $service)
+    {
+        foreach ($calls as $methodName => $parameters) {
+            $parameters = $this->wrapParametersIfNecessary($parameters);
+            $methodInvocation = $this->methodNameParser->parseInvocation($service, $methodName, $parameters);
+            $this->methodInvoker->invoke($container, $service, $methodInvocation);
+        }
+    }
+
+
     private function isInjectionApplicableFor($service, $baseClassName)
     {
         return $service instanceof $baseClassName;
+    }
+
+    private function wrapParametersIfNecessary($parameters)
+    {
+        if (! $parameters instanceof ArrayResolver) {
+            $parameters = new ArrayResolver([ $parameters ]);
+        }
+
+        return $parameters;
     }
 }
