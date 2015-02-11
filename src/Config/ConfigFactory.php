@@ -18,7 +18,15 @@ class ConfigFactory
             $path .= '.phin';
         }
 
+        $parser = self::getParserFromExtension($path);
+
+        return new FileConfig($parser, $path);
+    }
+
+    private static function getParserFromExtension($path)
+    {
         $extension = substr($path, strrpos($path, '.') + 1);
+
         $types = array(
             'phin' => '\Aztech\Phinject\Config\Parser\PhpParser',
             'json' => '\Aztech\Phinject\Config\Parser\JsonParser',
@@ -28,9 +36,7 @@ class ConfigFactory
         );
 
         if (array_key_exists($extension, $types)) {
-            $parser = new $types[$extension]($path);
-
-            return new FileConfig($parser, $path);
+            return new $types[$extension]($path);
         }
 
         throw new \InvalidArgumentException('Unable to detect file type : ' . $path);
