@@ -16,6 +16,7 @@ class ServiceBuilderFactory
         $injectorFactory = new InjectorFactory();
 
         $this->bindActivators($activatorFactory, $options);
+        $this->bindInjectors($injectorFactory, $options);
 
         if ((bool) $options->resolve('deferred', true) == true) {
             $serviceBuilder = new LazyServiceBuilder($activatorFactory, $injectorFactory);
@@ -41,19 +42,58 @@ class ServiceBuilderFactory
                 $activatorConfig = new ArrayResolver([ 'class' => $activatorConfig ]);
             }
 
-            $activatorClass = $activatorConfig->resolveStrict('class');
             $key = $activatorConfig->resolve('key', $name);
-            $activator =  new $activatorClass();
-
-            if ($activator instanceof ConfigurationAware) {
-                $activatorConfig = $activatorConfig->merge(
-                    new ArrayResolver([ 'key' => $key ])
-                );
-
-                $activator->setConfiguration($activatorConfig);
-            }
+            $activator = $this->buildActivator($key, $activatorConfig);
 
             $factory->addActivator($key, $activator);
         }
+    }
+
+    private function buildActivator($key, ArrayResolver $activatorConfig)
+    {
+        $activatorClass = $activatorConfig->resolveStrict('class');
+        $activator =  new $activatorClass();
+
+        if ($activator instanceof ConfigurationAware) {
+            $activatorConfig = $activatorConfig->merge(
+                new ArrayResolver([ 'key' => $key ])
+            );
+
+            $activator->setConfiguration($activatorConfig);
+        }
+
+        return $activator;
+    }
+
+    private function bindInjectors(InjectorFactory $factory, ArrayResolver $options)
+    {
+        $injectors = $options->resolve('injectors', []);
+
+        foreach ($injectors as $name => $injectorConfig) {
+            if (is_string($injectorConfig)) {
+                $injectorConfig = new ArrayResolver([ 'class' => $injectorConfig ]);
+            }
+
+            $key = $injectorConfig->resolve('key', $name);
+            $injector = $this->buildInjector($key, $injectorConfig);
+
+            $factory->addInjector($injector);
+        }
+    }
+
+    private function buildInjector($key, ArrayResolver $injectorConfig)
+    {
+        $injectorClass = $injectorConfig->resolveStrict('class');
+        $injector = new $injectorClass();
+
+        if ($injector instanceof ConfigurationAware) {
+            $injectorConfig = $injectorConfig->merge(
+                new ArrayResolver([ 'key' => $key ])
+            );
+
+            $injector->setConfiguration($injectorConfig);
+        }
+
+        return $injector;
     }
 }
