@@ -2,10 +2,7 @@
 
 namespace Aztech\Phinject\Resolver;
 
-use Aztech\Phinject\Container;
-use Aztech\Phinject\UnknownDefinitionException;
 use Interop\Container\ContainerInterface;
-use Interop\Container\Exception\NotFoundException;
 
 class ServiceResolver implements Resolver
 {
