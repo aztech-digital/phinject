@@ -22,7 +22,7 @@ class ContainerFactory
      *
      * @param ServiceBuilderFactory $factory
      */
-    public static function setServiceBuilderFactory(ServiceBuilderFactory $factory)
+    public static function setServiceBuilderFactory(ServiceBuilderFactory $factory = null)
     {
         self::$factory = $factory;
     }
@@ -96,7 +96,7 @@ class ContainerFactory
     {
         $resolver = new ArrayResolver($options);
         $config = self::getConfig($config, $resolver);
-        $builderFactory = self::$factory ?: new ServiceBuilderFactory();
+        $builderFactory = self::getFactory();
 
         $serviceBuilderConfig = $config->getResolver()
             ->resolve('config', [], true)
@@ -123,7 +123,7 @@ class ContainerFactory
 
     private static function getFactory()
     {
-        if (! self::$factory) {
+        if (self::$factory == null) {
             self::$factory = new ServiceBuilderFactory();
         }
 

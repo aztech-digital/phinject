@@ -3,6 +3,7 @@
 namespace Aztech\Phinject\Tests;
 
 use Aztech\Phinject\ContainerFactory;
+use Prophecy\Argument;
 
 class ContainerFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -31,6 +32,21 @@ class ContainerFactoryTest extends \PHPUnit_Framework_TestCase
         $container = ContainerFactory::createFromPhp($file);
 
         $this->assertInstanceOf('\Aztech\Phinject\Container', $container);
+    }
+
+    public function testOverridenServiceBuilderFactoryIsUsedByFactory()
+    {
+        $serviceBuilder = $this->prophesize('Aztech\Phinject\ServiceBuilder');
+
+        $serviceBuilderFactory = $this->prophesize('\Aztech\Phinject\ServiceBuilderFactory');
+        $serviceBuilderFactory
+            ->build(Argument::any())
+            ->willReturn($serviceBuilder->reveal())
+            ->shouldBeCalled();
+
+        ContainerFactory::setServiceBuilderFactory($serviceBuilderFactory->reveal());
+        ContainerFactory::createFromInlineYaml('');
+        ContainerFactory::setServiceBuilderFactory(null);
     }
 
     /**
