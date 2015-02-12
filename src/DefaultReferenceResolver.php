@@ -12,9 +12,9 @@ use Aztech\Phinject\Resolver\NullCoalescingResolver;
 use Aztech\Phinject\Resolver\ParameterResolver;
 use Aztech\Phinject\Resolver\PassThroughResolver;
 use Aztech\Phinject\Resolver\Resolver;
+use Aztech\Phinject\Resolver\ServiceNameResolver;
 use Aztech\Phinject\Resolver\ServiceResolver;
 use Interop\Container\ContainerInterface;
-use Aztech\Phinject\Resolver\ServiceNameResolver;
 
 class DefaultReferenceResolver implements ReferenceResolver
 {

@@ -3,6 +3,7 @@
 namespace Aztech\Phinject\Resolver;
 
 use Aztech\Phinject\Container;
+
 class ServiceNameResolver implements Resolver
 {
 
