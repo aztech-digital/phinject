@@ -52,12 +52,19 @@ class ObjectContainer implements Container, DelegatingContainer
 
     /**
      *
+     * @var \SplStack
+     */
+    protected $buildContext = null;
+
+    /**
+     *
      * @param Config $config
      */
     public function __construct(Config $config, ServiceBuilder $builder)
     {
         $this->config = $config->getResolver();
 
+        $this->buildContext = new \SplStack();
         $this->serviceBuilder = $builder;
         $this->classes = $this->config->resolveArray('classes', []);
         $this->registry = new ObjectRegistry();
@@ -87,6 +94,15 @@ class ObjectContainer implements Container, DelegatingContainer
         }
 
         return $this->serviceBuilder->buildService($this, $definition, $serviceName);
+    }
+
+    public function getBuildContextName()
+    {
+        if ($this->buildContext->count()) {
+            return $this->buildContext->top();
+        }
+
+        throw new \RuntimeException('No current build context');
     }
 
     /**
@@ -267,9 +283,12 @@ class ObjectContainer implements Container, DelegatingContainer
         }
 
         try {
+            $this->buildContext->push($serviceName);
             $service = $this->loadService($serviceName, $serviceConfig);
         } catch (UnknownDefinitionException $ex) {
             throw new UnknownDefinitionException(sprintf("Dependency '%s' not found while trying to build '%s'.", $ex->getServiceName(), $serviceName));
+        } finally {
+            $this->buildContext->pop();
         }
 
         return $service;

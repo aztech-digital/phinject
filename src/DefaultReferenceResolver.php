@@ -14,6 +14,7 @@ use Aztech\Phinject\Resolver\PassThroughResolver;
 use Aztech\Phinject\Resolver\Resolver;
 use Aztech\Phinject\Resolver\ServiceResolver;
 use Interop\Container\ContainerInterface;
+use Aztech\Phinject\Resolver\ServiceNameResolver;
 
 class DefaultReferenceResolver implements ReferenceResolver
 {
@@ -63,6 +64,7 @@ class DefaultReferenceResolver implements ReferenceResolver
         $this->resolvers[] = new ContainerResolver($mainContainer, self::CONTAINER_REGEXP);
         $this->resolvers[] = new EnvironmentVariableResolver(self::ENVIRONMENT_REGEXP);
         $this->resolvers[] = new ConstantResolver(self::CONSTANT_REGEXP);
+        $this->resolvers[] = new ServiceNameResolver($mainContainer);
         $this->resolvers[] = new PassThroughResolver();
     }
 
