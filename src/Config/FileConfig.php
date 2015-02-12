@@ -37,6 +37,10 @@ class FileConfig extends AbstractConfig
      */
     protected function loadFile($filePath)
     {
+        if (! file_exists($filePath)) {
+            throw new \InvalidArgumentException('Configuration file \'' . $sourceFile . '\' not found.');
+        }
+
         $data = file_get_contents($filePath);
 
         try {
@@ -56,13 +60,6 @@ class FileConfig extends AbstractConfig
     protected function doLoad()
     {
         $data = $this->getSourcedData($this->sourceFile);
-        $root = dirname($this->sourceFile) . DIRECTORY_SEPARATOR;
-        $includes = $data->resolveArray('include', []);
-
-        foreach ($includes as $relativeFilePath) {
-            $include = $this->getSourcedData($root . $relativeFilePath);
-            $data = $data->mergeRecursiveUnique($include);
-        }
 
         return $data->extract();
     }
@@ -81,7 +78,16 @@ class FileConfig extends AbstractConfig
             throw new InvalidConfigurationException('Invalid configuration, data is not an array in ' . $file);
         }
 
-        return new ArrayResolver($data);
+        $data = new ArrayResolver($data);
+        $root = dirname($this->sourceFile) . DIRECTORY_SEPARATOR;
+        $includes = $data->resolveArray('include', []);
+
+        foreach ($includes as $relativeFilePath) {
+            $include = $this->getSourcedData($root . $relativeFilePath);
+            $data = $data->mergeRecursiveUnique($include);
+        }
+
+        return $data;
     }
 
     /**
