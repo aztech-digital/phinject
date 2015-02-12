@@ -286,12 +286,13 @@ class ObjectContainer implements Container, DelegatingContainer
             $this->buildContext->push($serviceName);
             $service = $this->loadService($serviceName, $serviceConfig);
             $this->buildContext->pop();
+
+            return $service;
         } catch (UnknownDefinitionException $ex) {
             $this->buildContext->pop();
+
             throw new UnknownDefinitionException(sprintf("Dependency '%s' not found while trying to build '%s'.", $ex->getServiceName(), $serviceName));
         }
-
-        return $service;
     }
 
     /**
