@@ -76,6 +76,10 @@ class DefaultReferenceResolver implements ReferenceResolver
      */
     public function resolve($reference)
     {
+        if (empty($reference)) {
+            return $reference;
+        }
+
         if ($this->isResolvableAnonymousReference($reference)) {
             return $this->resolveAnonymousReference($reference);
         }
