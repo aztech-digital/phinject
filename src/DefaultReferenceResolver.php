@@ -8,6 +8,7 @@ use Aztech\Phinject\Resolver\DeferredMethodResolver;
 use Aztech\Phinject\Resolver\DynamicParameterResolver;
 use Aztech\Phinject\Resolver\EnvironmentVariableResolver;
 use Aztech\Phinject\Resolver\NamespaceResolver;
+use Aztech\Phinject\Resolver\NotResolver;
 use Aztech\Phinject\Resolver\NullCoalescingResolver;
 use Aztech\Phinject\Resolver\ParameterResolver;
 use Aztech\Phinject\Resolver\PassThroughResolver;
@@ -46,7 +47,8 @@ class DefaultReferenceResolver implements ReferenceResolver
     /**
      * Create a new resolver.
      *
-     * @param Container $container
+     * @param ContainerInterface $container
+     * @param Container $mainContainer
      */
     public function __construct(ContainerInterface $container, Container $mainContainer)
     {
@@ -60,6 +62,8 @@ class DefaultReferenceResolver implements ReferenceResolver
         $this->resolvers[] = new ParameterResolver($mainContainer);
 
         $this->resolvers[] = new ServiceResolver($container);
+
+        $this->resolvers[] = new NotResolver($mainContainer);
 
         $this->resolvers[] = new ContainerResolver($mainContainer, self::CONTAINER_REGEXP);
         $this->resolvers[] = new EnvironmentVariableResolver(self::ENVIRONMENT_REGEXP);
