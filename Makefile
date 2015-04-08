@@ -1,24 +1,15 @@
-# If the first argument is one of the supported commands...
-SUPPORTED_COMMANDS := "install"
-SUPPORTS_MAKE_ARGS := $(findstring $(firstword $(MAKECMDGOALS)), $(SUPPORTED_COMMANDS))
-ifneq "$(SUPPORTS_MAKE_ARGS)" ""
-    # use the rest as arguments for the command
-    COMMAND_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-    # ...and turn them into do-nothing targets
-    $(eval $(COMMAND_ARGS):;@:)
-endif
+.PHONY: install update test test-analysis test-upload pretest phpunit phpcs phpmd bugfree ocular scrutinizer clean clean-env clean-deps
 
 test: phpunit phpcs bugfree phpmd
 test-analysis: phpcs bugfree phpmd
 test-upload: scrutinizer
 
 install:
-	make -f Makefile.docker -- composer install $(COMMAND_ARGS)
+	composer install
 
 update:
-
-.PHONY: test test-analysis test-upload pretest phpunit phpcs phpmd bugfree ocular scrutinizer clean clean-env clean-deps
-
+	composer update
+	
 pretest:
 	composer install --dev
 	
