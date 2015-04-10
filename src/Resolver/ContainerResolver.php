@@ -10,6 +10,7 @@ class ContainerResolver extends RegexMatchingResolver
     private $container;
 
     /**
+     * @param Container $container
      * @param string $regex
      */
     public function __construct(Container $container, $regex)
